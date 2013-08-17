@@ -8,7 +8,7 @@ namespace NLoop.Core
 	/// <summary>
 	/// Implements the core API of the event loop.
 	/// </summary>
-	public class EventLoop : Disposable
+	public class EventLoop : Disposable, IScheduler
 	{
 		/// <summary>
 		/// Holds all the callbacks to event handlers which need to be invoked in this event loop.
@@ -38,7 +38,6 @@ namespace NLoop.Core
 		/// </summary>
 		/// <param name="callback">The callback which to schedule for execution.</param>
 		/// <exception cref="ArgumentNullException">Thrown if <paramref name="callback"/> is null.</exception>
-		/// <exception cref="ObjectDisposedException">Thrown if this worker has been disposed of.</exception>
 		public void Schedule(Action callback)
 		{
 			// validate arguments

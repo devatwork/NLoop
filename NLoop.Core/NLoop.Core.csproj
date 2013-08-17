@@ -40,6 +40,11 @@
   <ItemGroup>
     <Compile Include="EventLoop.cs" />
     <Compile Include="EventLoopWorker.cs" />
+    <Compile Include="IScheduler.cs" />
+    <Compile Include="Promises\Deferred.cs" />
+    <Compile Include="Promises\Promise.cs" />
+    <Compile Include="Promises\RejectedCallback.cs" />
+    <Compile Include="Promises\ResolvedCallback.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResourceFactoryCallback.cs" />
     <Compile Include="Utils\Disposable.cs" />
@@ -47,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="EventLoop.cd" />
+    <None Include="Promises\Promises.cd" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
