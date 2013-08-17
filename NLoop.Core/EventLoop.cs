@@ -15,6 +15,10 @@ namespace NLoop.Core
 		/// </summary>
 		private readonly ConcurrentQueue<Action> callbackQueue = new ConcurrentQueue<Action>();
 		/// <summary>
+		/// Holds all the registered resources used in this event loop.
+		/// </summary>
+		private readonly ConcurrentDictionary<CancellationToken, IDisposable> resources = new ConcurrentDictionary<CancellationToken, IDisposable>();
+		/// <summary>
 		/// Holds the <see cref="EventLoopWorker"/> used by this event loop.
 		/// </summary>
 		private EventLoopWorker worker;
@@ -94,13 +98,37 @@ namespace NLoop.Core
 			worker.Stop();
 		}
 		/// <summary>
-		/// Tries to dequeue the next callback from the <see cref="callbackQueue"/>.
+		/// Registers a new cancellable resource to this event loop.
 		/// </summary>
-		/// <returns>Returns the callback if there is one, otherwise null.</returns>
-		private Action NextCallback()
+		/// <param name="resourceFactory">Creates the new resource.</param>
+		/// <returns>Returns the created <see cref="CancellationTokenSource"/>.</returns>
+		public CancellationTokenSource TrackResource(ResourceFactoryCallback resourceFactory)
 		{
-			Action callback;
-			return callbackQueue.TryDequeue(out callback) ? callback : null;
+			// validate arguments
+			if (resourceFactory == null)
+				throw new ArgumentNullException("resourceFactory");
+
+			// check if we are not disposed
+			CheckDisposed();
+
+			// create a cancellation token source used to cancel the resource
+			var cts = new CancellationTokenSource();
+			var token = cts.Token;
+
+			// track the resource
+			resources.AddOrUpdate(token, key => {
+				// create the resource
+				var resource = resourceFactory(token, () => UnregisterResource(token));
+
+				// create a dispose action which disposed the resource and the cancellation token
+				return new DisposeAction(() => {
+					resource.Dispose();
+					cts.Dispose();
+				});
+			}, (key, value) => { throw new NotSupportedException("The token was already registered for another resource, this should never happen"); });
+
+			// return the created cts
+			return cts;
 		}
 		/// <summary>
 		/// Dispose resources. Override this method in derived classes. Unmanaged resources should always be released
@@ -113,9 +141,38 @@ namespace NLoop.Core
 			if (!disposeManagedResources)
 				return;
 
+			// tell the worker to stop
+			if (worker != null)
+				worker.Stop();
+
+			// dispose all resources tracked by this event loop
+			foreach (var disposable in resources.Values)
+				disposable.Dispose();
+			resources.Clear();
+
 			// dispose the worker
 			if (worker != null)
 				worker.Dispose();
+		}
+		/// <summary>
+		/// Tries to dequeue the next callback from the <see cref="callbackQueue"/>.
+		/// </summary>
+		/// <returns>Returns the callback if there is one, otherwise null.</returns>
+		private Action NextCallback()
+		{
+			Action callback;
+			return callbackQueue.TryDequeue(out callback) ? callback : null;
+		}
+		/// <summary>
+		/// Unregisters a resource by its <paramref name="token"/>.
+		/// </summary>
+		/// <param name="token">The <see cref="CancellationToken"/> of the resource.</param>
+		private void UnregisterResource(CancellationToken token)
+		{
+			// invoke the dispose action, if there is one registered for the given token.
+			IDisposable disposeAction;
+			if (resources.TryRemove(token, out disposeAction))
+				disposeAction.Dispose();
 		}
 	}
 }

@@ -41,7 +41,9 @@
     <Compile Include="EventLoop.cs" />
     <Compile Include="EventLoopWorker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ResourceFactoryCallback.cs" />
     <Compile Include="Utils\Disposable.cs" />
+    <Compile Include="Utils\DisposeAction.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="EventLoop.cd" />

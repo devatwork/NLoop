@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using NLoop.Core;
+using NLoop.Core.Utils;
 
 namespace NLoop.Timing
 {
@@ -25,8 +26,33 @@ namespace NLoop.Timing
 			if (callback == null)
 				throw new ArgumentNullException("callback");
 
-			// create the timeout
-			return new Timer(state => eventLoop.Add(callback), null, timeout, Timeout.InfiniteTimeSpan);
+			// create a resource managed by the event loop
+			var cts = eventLoop.TrackResource((token, untrack) => {
+				// create the timer which will schedule the callback
+				var timer = new Timer(state => {
+					// check if the operation was cancelled
+					if (token.IsCancellationRequested)
+						return;
+
+					// set timeout only works once, so it does not longer have to be a managed resource
+					untrack();
+
+					// schedule the callback for execution
+					eventLoop.Add(callback);
+				}, null, timeout, Timeout.InfiniteTimeSpan);
+
+				// dispose the timer if the cts is cancelled
+				token.Register(timer.Dispose);
+
+				// return the created timer
+				return timer;
+			});
+
+			// return an action which cancels the cts and disposes the resource
+			return new DisposeAction(() => {
+				cts.Cancel();
+				cts.Dispose();
+			});
 		}
 		/// <summary>
 		/// Invokes the <paramref name="callback"/> after every elapsed <paramref name="timeout"/>.
@@ -44,8 +70,30 @@ namespace NLoop.Timing
 			if (callback == null)
 				throw new ArgumentNullException("callback");
 
-			// create the timeout
-			return new Timer(state => eventLoop.Add(callback), null, timeout, timeout);
+			// create a resource managed by the event loop
+			var cts = eventLoop.TrackResource((token, untrack) => {
+				// create the timer which will schedule the callback
+				var timer = new Timer(state => {
+					// check if the operation was cancelled
+					if (token.IsCancellationRequested)
+						return;
+
+					// schedule the callback for execution
+					eventLoop.Add(callback);
+				}, null, timeout, timeout);
+
+				// dispose the timer if the cts is cancelled
+				token.Register(timer.Dispose);
+
+				// return the created timer
+				return timer;
+			});
+
+			// return an action which cancels the cts and disposes the resource
+			return new DisposeAction(() => {
+				cts.Cancel();
+				cts.Dispose();
+			});
 		}
 	}
 }

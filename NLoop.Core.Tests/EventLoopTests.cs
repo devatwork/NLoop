@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using NLoop.Core.Utils;
 using NUnit.Framework;
 
 namespace NLoop.Core.Tests
@@ -105,6 +106,60 @@ namespace NLoop.Core.Tests
 			// assert
 			Assert.That(() => loop.Start(() => { }), Throws.InstanceOf<ObjectDisposedException>());
 			Assert.That(() => loop.Stop(), Throws.InstanceOf<ObjectDisposedException>());
+		}
+		[Test]
+		public void TrackResourceParameterChecking()
+		{
+			Assert.That(() => new EventLoop().TrackResource(null), Throws.InstanceOf<ArgumentNullException>());
+		}
+		[Test]
+		public void TrackResourceCancel()
+		{
+			// arrange
+			var loop = new EventLoop();
+			var cancelled = false;
+			var cts = loop.TrackResource((token, untrack) => {
+				token.Register(() => { cancelled = true; });
+				return new DisposeAction(() => { });
+			});
+
+			// act
+			cts.Cancel();
+
+			// assert
+			Assert.That(cancelled, Is.True);
+		}
+		[Test]
+		public void TrackResourceDispose()
+		{
+			// arrange
+			var loop = new EventLoop();
+			var disposed = false;
+			var cts = loop.TrackResource((token, untrack) => new DisposeAction(() => { disposed = true; }));
+
+			// act
+			loop.Dispose();
+
+			// assert
+			Assert.That(disposed, Is.True);
+		}
+		[Test]
+		public void TrackResourceUntrackedDisposed()
+		{
+			// arrange
+			var loop = new EventLoop();
+			var disposed = false;
+			Action doUntrack = null;
+			var cts = loop.TrackResource((token, untrack) => {
+				doUntrack = untrack;
+				return new DisposeAction(() => { disposed = true; });
+			});
+
+			// act
+			doUntrack();
+
+			// assert
+			Assert.That(disposed, Is.True);
 		}
 	}
 }
