@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 
 [assembly: AssemblyTitle("NLoop.Core")]
-[assembly: AssemblyDescription("An event loop implementation for C#")]
+[assembly: AssemblyDescription("An event loop implementation for .NET")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("NLoop")]
