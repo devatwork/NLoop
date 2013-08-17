@@ -50,7 +50,7 @@ namespace NLoop.Timing.Tests
 
 			// act
 			var cancelTimeout = loop.SetTimeout(callback, timeout);
-			cancelTimeout.Dispose();
+			cancelTimeout();
 
 			// assert
 			Assert.That(callbackinvoked.WaitOne(timeout + timeout), Is.False);
@@ -96,7 +96,7 @@ namespace NLoop.Timing.Tests
 
 			// act
 			var cancelTimeout = loop.SetInterval(callback, timeout);
-			cancelTimeout.Dispose();
+			cancelTimeout();
 
 			// assert
 			Assert.That(callbackinvoked.WaitOne(timeout + timeout), Is.False);
