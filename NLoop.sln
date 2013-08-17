@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NLoop.Timing.Tests", "NLoop
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NLoop.Timing", "NLoop.Timing\NLoop.Timing.csproj", "{0284A46C-BA2C-45CE-975B-4F39C6E11353}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NLoop.TestApp", "NLoop.TestApp\NLoop.TestApp.csproj", "{9410DE36-D616-4F41-9A7D-B58AEF18C419}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,10 @@ Global
 		{0284A46C-BA2C-45CE-975B-4F39C6E11353}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0284A46C-BA2C-45CE-975B-4F39C6E11353}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0284A46C-BA2C-45CE-975B-4F39C6E11353}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9410DE36-D616-4F41-9A7D-B58AEF18C419}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9410DE36-D616-4F41-9A7D-B58AEF18C419}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9410DE36-D616-4F41-9A7D-B58AEF18C419}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9410DE36-D616-4F41-9A7D-B58AEF18C419}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
