@@ -25,11 +25,11 @@ namespace NLoop.Core
 		/// <summary>
 		/// Synchronizes the stopping of the <see cref="worker"/> and the <see cref="EventLoop"/>.
 		/// </summary>
-		private readonly ManualResetEvent stopHandle = new ManualResetEvent(true);
+		private readonly ManualResetEventSlim stopHandle = new ManualResetEventSlim(true);
 		/// <summary>
 		/// WaitHandle to set if there is more work to be done.
 		/// </summary>
-		private readonly ManualResetEvent moreWorkHandle = new ManualResetEvent(true);
+		private readonly ManualResetEventSlim moreWorkHandle = new ManualResetEventSlim(true);
 		/// <summary>
 		/// Gets a flag whether this worker is running or not.
 		/// </summary>
@@ -42,7 +42,7 @@ namespace NLoop.Core
 				CheckDisposed();
 
 				// return the state of the stop handle
-				return !stopHandle.WaitOne(0);
+				return !stopHandle.Wait(0);
 			}
 		}
 		/// <summary>
@@ -57,7 +57,7 @@ namespace NLoop.Core
 				CheckDisposed();
 
 				// return the state of the stop handle
-				return !moreWorkHandle.WaitOne(0);
+				return !moreWorkHandle.Wait(0);
 			}
 		}
 		/// <summary>
@@ -132,7 +132,7 @@ namespace NLoop.Core
 			while (true)
 			{
 				// check if the stop handle has been set, indicating we should stop doing work
-				if (stopHandle.WaitOne(0))
+				if (stopHandle.Wait(0))
 					break;
 
 				// get a callback from the event loop's callback queue
@@ -142,7 +142,7 @@ namespace NLoop.Core
 				if (callback == null)
 				{
 					moreWorkHandle.Reset();
-					moreWorkHandle.WaitOne(Timeout.Infinite);
+					moreWorkHandle.Wait(Timeout.Infinite);
 					continue;
 				}
 
@@ -165,7 +165,7 @@ namespace NLoop.Core
 				return;
 
 			// check if the worker is running
-			if (!stopHandle.WaitOne(0))
+			if (!stopHandle.Wait(0))
 			{
 				// stop executing work
 				stopHandle.Set();
