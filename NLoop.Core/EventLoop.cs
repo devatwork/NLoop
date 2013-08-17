@@ -24,7 +24,7 @@ namespace NLoop.Core
 		/// <summary>
 		/// Gets a flag indicating whether this event loop was already started or not.
 		/// </summary>
-		public bool WasStarted
+		public bool IsStarted
 		{
 			get { return Thread.VolatileRead(ref startedState) == 1; }
 		}
@@ -55,7 +55,7 @@ namespace NLoop.Core
 			// Attempt to move the started state from 0 to 1. If successful, we can be assured that
 			// this thread is the first thread to do so, and can safely start this event loop.
 			if (Interlocked.CompareExchange(ref startedState, 1, 0) != 0)
-				throw new InvalidOperationException("This eventloop was already started");
+				throw new InvalidOperationException("This event loop was already started");
 
 			// add the initial callback to this loop
 			Add(callback);
