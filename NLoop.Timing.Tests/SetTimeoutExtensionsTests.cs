@@ -39,7 +39,7 @@ namespace NLoop.Timing.Tests
 			Assert.That(callbackinvoked.WaitOne(timeout + timeout), Is.True);
 		}
 		[Test]
-		public void CancelTimeout()
+		public void SetTimeoutCancel()
 		{
 			// arrange
 			var loop = new EventLoop();
@@ -50,6 +50,52 @@ namespace NLoop.Timing.Tests
 
 			// act
 			var cancelTimeout = loop.SetTimeout(callback, timeout);
+			cancelTimeout.Dispose();
+
+			// assert
+			Assert.That(callbackinvoked.WaitOne(timeout + timeout), Is.False);
+		}
+		[Test]
+		public void SetIntervalParameterChecking()
+		{
+			// arrange
+			var loop = new EventLoop();
+			loop.Start(() => { });
+			var callback = new Action(() => { });
+			var timeout = TimeSpan.FromMilliseconds(100);
+
+			// assert
+			Assert.That(() => ((EventLoop) null).SetInterval(callback, timeout), Throws.InstanceOf<ArgumentNullException>());
+			Assert.That(() => loop.SetInterval(null, timeout), Throws.InstanceOf<ArgumentNullException>());
+		}
+		[Test]
+		public void SetInterval()
+		{
+			// arrange
+			var loop = new EventLoop();
+			loop.Start(() => { });
+			var counter = new CountdownEvent(2);
+			var callback = new Action(() => counter.Signal());
+			var timeout = TimeSpan.FromMilliseconds(100);
+
+			// act
+			loop.SetInterval(callback, timeout);
+
+			// assert
+			Assert.That(counter.Wait(timeout + timeout + timeout), Is.True);
+		}
+		[Test]
+		public void SetIntervalCancel()
+		{
+			// arrange
+			var loop = new EventLoop();
+			loop.Start(() => { });
+			var callbackinvoked = new ManualResetEvent(false);
+			var callback = new Action(() => callbackinvoked.Set());
+			var timeout = TimeSpan.FromMilliseconds(100);
+
+			// act
+			var cancelTimeout = loop.SetInterval(callback, timeout);
 			cancelTimeout.Dispose();
 
 			// assert
