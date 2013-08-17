@@ -92,5 +92,20 @@ namespace NLoop.Core.Tests
 			// assert
 			Assert.That(() => wait.WaitOne(maxSleep), Is.False);
 		}
+		[Test]
+		public void ThrowIfDisposed()
+		{
+			// arrange
+			var loop = new EventLoop();
+
+			// act
+			loop.Start(() => { });
+			loop.Dispose();
+
+			// assert
+			Assert.That(() => loop.Add(() => { }), Throws.InstanceOf<ObjectDisposedException>());
+			Assert.That(() => loop.Start(() => { }), Throws.InstanceOf<ObjectDisposedException>());
+			Assert.That(() => loop.Stop(), Throws.InstanceOf<ObjectDisposedException>());
+		}
 	}
 }

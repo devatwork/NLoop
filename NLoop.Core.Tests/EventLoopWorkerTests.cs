@@ -95,6 +95,7 @@ namespace NLoop.Core.Tests
 			var worker = new EventLoopWorker(nextCallback);
 
 			// act
+			worker.Start();
 			worker.Dispose();
 
 			// assert

@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Threading;
+using NLoop.Core.Utils;
 
 namespace NLoop.Core
 {
 	/// <summary>
 	/// Implements the core API of the event loop.
 	/// </summary>
-	public class EventLoop
+	public class EventLoop : Disposable
 	{
 		/// <summary>
 		/// Holds all the callbacks to event handlers which need to be invoked in this event loop.
@@ -33,11 +34,15 @@ namespace NLoop.Core
 		/// </summary>
 		/// <param name="callback">The callback which to add to this event loop.</param>
 		/// <exception cref="ArgumentNullException">Thrown if <paramref name="callback"/> is null.</exception>
+		/// <exception cref="ObjectDisposedException">Thrown if this worker has been disposed of.</exception>
 		public void Add(Action callback)
 		{
 			// validate arguments
 			if (callback == null)
 				throw new ArgumentNullException("callback");
+
+			// check if we are not disposed
+			CheckDisposed();
 
 			// enqueue the callback
 			callbackQueue.Enqueue(callback);
@@ -47,11 +52,15 @@ namespace NLoop.Core
 		/// </summary>
 		/// <param name="callback">The callback which to execute on the started event loop.</param>
 		/// <exception cref="ArgumentNullException">Thrown if <paramref name="callback"/> is null.</exception>
+		/// <exception cref="ObjectDisposedException">Thrown if this worker has been disposed of.</exception>
 		public void Start(Action callback)
 		{
 			// validate arguments
 			if (callback == null)
 				throw new ArgumentNullException("callback");
+
+			// check if we are not disposed
+			CheckDisposed();
 
 			// add the initial callback to this loop
 			Add(callback);
@@ -70,8 +79,12 @@ namespace NLoop.Core
 		/// <summary>
 		/// Stops this event loop. 
 		/// </summary>
+		/// <exception cref="ObjectDisposedException">Thrown if this worker has been disposed of.</exception>
 		public void Stop()
 		{
+			// check if we are not disposed
+			CheckDisposed();
+
 			// if the event loop was not started there is not much to do
 			if (!IsStarted || worker == null)
 				return;
@@ -87,6 +100,21 @@ namespace NLoop.Core
 		{
 			Action callback;
 			return callbackQueue.TryDequeue(out callback) ? callback : null;
+		}
+		/// <summary>
+		/// Dispose resources. Override this method in derived classes. Unmanaged resources should always be released
+		/// when this method is called. Managed resources may only be disposed of if disposeManagedResources is true.
+		/// </summary>
+		/// <param name="disposeManagedResources">A value which indicates whether managed resources may be disposed of.</param>
+		protected override void DisposeResources(bool disposeManagedResources)
+		{
+			// we only have managed resources
+			if (!disposeManagedResources)
+				return;
+
+			// dispose the worker
+			if (worker != null)
+				worker.Dispose();
 		}
 	}
 }
