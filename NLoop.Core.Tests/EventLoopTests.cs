@@ -103,7 +103,6 @@ namespace NLoop.Core.Tests
 			loop.Dispose();
 
 			// assert
-			Assert.That(() => loop.Add(() => { }), Throws.InstanceOf<ObjectDisposedException>());
 			Assert.That(() => loop.Start(() => { }), Throws.InstanceOf<ObjectDisposedException>());
 			Assert.That(() => loop.Stop(), Throws.InstanceOf<ObjectDisposedException>());
 		}

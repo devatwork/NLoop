@@ -103,5 +103,44 @@ namespace NLoop.Core.Tests
 			Assert.That(() => worker.Start(), Throws.InstanceOf<ObjectDisposedException>());
 			Assert.That(() => worker.Stop(), Throws.InstanceOf<ObjectDisposedException>());
 		}
+		[Test]
+		public void WakeupAfterIdling()
+		{
+			// arrange
+			var doWork = true;
+			var counter = new CountdownEvent(2);
+			var nextCallback = new Func<Action>(() => {
+				if (!doWork)
+					return null;
+
+				doWork = false;
+				return () => {
+					Thread.Sleep(50);
+					counter.Signal();
+				};
+			});
+			var worker = new EventLoopWorker(nextCallback);
+
+			// act
+			worker.Start();
+			Assert.That(worker.IsIdling, Is.False);
+
+			// assert
+			Thread.Sleep(100);
+			Assert.That(worker.IsIdling, Is.True);
+
+			// act
+			doWork = true;
+
+			// make sure the worker is waiting for the signal work
+			Thread.Sleep(100);
+			Assert.That(worker.IsIdling, Is.True);
+
+			// act
+			worker.SignalMoreWork();
+
+			// assert that the work is actually done
+			Assert.That(counter.Wait(100), Is.True);
+		}
 	}
 }

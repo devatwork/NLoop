@@ -41,11 +41,12 @@ namespace NLoop.Core
 			if (callback == null)
 				throw new ArgumentNullException("callback");
 
-			// check if we are not disposed
-			CheckDisposed();
-
 			// enqueue the callback
 			callbackQueue.Enqueue(callback);
+
+			// signal the worker there is more  work
+			if (IsStarted && worker != null)
+				worker.SignalMoreWork();
 		}
 		/// <summary>
 		/// Starts this event loop and add the given <paramref name="callback"/> to it to execute first.

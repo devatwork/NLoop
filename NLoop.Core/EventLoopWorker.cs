@@ -27,6 +27,10 @@ namespace NLoop.Core
 		/// </summary>
 		private readonly ManualResetEvent stopHandle = new ManualResetEvent(true);
 		/// <summary>
+		/// Flags .
+		/// </summary>
+		private readonly ManualResetEvent moreWorkHandle = new ManualResetEvent(true);
+		/// <summary>
 		/// Gets a flag whether this worker is running or not.
 		/// </summary>
 		/// <exception cref="ObjectDisposedException">Thrown if this worker has been disposed of.</exception>
@@ -39,6 +43,21 @@ namespace NLoop.Core
 
 				// return the state of the stop handle
 				return !stopHandle.WaitOne(0);
+			}
+		}
+		/// <summary>
+		/// Gets a flag indicating whether the worker is idling.
+		/// </summary>
+		/// <exception cref="ObjectDisposedException">Thrown if this worker has been disposed of.</exception>
+		public bool IsIdling
+		{
+			get
+			{
+				// check if we are not disposed
+				CheckDisposed();
+
+				// return the state of the stop handle
+				return !moreWorkHandle.WaitOne(0);
 			}
 		}
 		/// <summary>
@@ -70,6 +89,7 @@ namespace NLoop.Core
 
 			// first clear the stop handle, which enables the worker loop to rung
 			stopHandle.Reset();
+			SignalMoreWork();
 
 			// start doing th work
 			worker.ContinueWith(Work);
@@ -85,6 +105,18 @@ namespace NLoop.Core
 
 			// signal the worker to stop processing
 			stopHandle.Set();
+		}
+		/// <summary>
+		/// Signals the worker there is work to be done.
+		/// </summary>
+		public void SignalMoreWork()
+		{
+			// if the worker is disposed, do nothing
+			if (IsDisposed)
+				return;
+
+			// signal worker there is something to do
+			moreWorkHandle.Set();
 		}
 		/// <summary>
 		/// Implements the event loop.
@@ -106,10 +138,13 @@ namespace NLoop.Core
 				// get a callback from the event loop's callback queue
 				var callback = nextCallback();
 
-				// if no callback was returned, there is nothing to do
-				// TODO: make this more efficient with a wait handle?
+				// if no callback was returned, there is nothing to do, clear the more work handle and wait for it to be set again
 				if (callback == null)
+				{
+					moreWorkHandle.Reset();
+					moreWorkHandle.WaitOne(Timeout.Infinite);
 					continue;
+				}
 
 				// invoke the callback
 				callback();
@@ -134,6 +169,7 @@ namespace NLoop.Core
 			{
 				// stop executing work
 				stopHandle.Set();
+				moreWorkHandle.Reset();
 
 				// wait DisposeWaitTimeout for the worker to finish processing, that should be enough, if not tough luck
 				worker.Wait(DisposeWaitTimeout);
@@ -142,6 +178,7 @@ namespace NLoop.Core
 			// cleanup
 			worker.Dispose();
 			stopHandle.Dispose();
+			moreWorkHandle.Dispose();
 		}
 	}
 }
