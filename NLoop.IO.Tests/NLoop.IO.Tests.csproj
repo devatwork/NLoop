@@ -4,16 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{9410DE36-D616-4F41-9A7D-B58AEF18C419}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{F0A63254-0036-4C31-A9A6-33451BE3433D}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>NLoop.TestApp</RootNamespace>
-    <AssemblyName>NLoop.TestApp</AssemblyName>
+    <RootNamespace>NLoop.IO.Tests</RootNamespace>
+    <AssemblyName>NLoop.IO.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -23,7 +22,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -32,17 +30,25 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Moq">
+      <HintPath>..\packages\Moq.Delegates.4.0.10827.1\lib\net40\Moq.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework, Version=2.6.2.12296, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\NUnit.2.6.2\lib\nunit.framework.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="FileInfoExtensionsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
+    <ProjectReference Include="..\NLoop.Core.Tests\NLoop.Core.Tests.csproj">
+      <Project>{F1FB7E42-3C2E-46FC-B413-A5CF198392B9}</Project>
+      <Name>NLoop.Core.Tests</Name>
+    </ProjectReference>
     <ProjectReference Include="..\NLoop.Core\NLoop.Core.csproj">
       <Project>{2cad14f2-3bef-4f96-8677-5c0d4d59eb06}</Project>
       <Name>NLoop.Core</Name>
@@ -51,10 +57,9 @@
       <Project>{99b9d1f9-90b6-4158-b03d-1ef16e473d87}</Project>
       <Name>NLoop.IO</Name>
     </ProjectReference>
-    <ProjectReference Include="..\NLoop.Timing\NLoop.Timing.csproj">
-      <Project>{0284a46c-ba2c-45ce-975b-4f39c6e11353}</Project>
-      <Name>NLoop.Timing</Name>
-    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

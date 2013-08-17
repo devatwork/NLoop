@@ -4,56 +4,47 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{9410DE36-D616-4F41-9A7D-B58AEF18C419}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{99B9D1F9-90B6-4158-B03D-1EF16E473D87}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>NLoop.TestApp</RootNamespace>
-    <AssemblyName>NLoop.TestApp</AssemblyName>
+    <RootNamespace>NLoop.IO</RootNamespace>
+    <AssemblyName>NLoop.IO</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>bin\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <DocumentationFile>bin\NLoop.IO.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>bin\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <DocumentationFile>bin\NLoop.IO.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="FileInfoExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NLoop.Core\NLoop.Core.csproj">
       <Project>{2cad14f2-3bef-4f96-8677-5c0d4d59eb06}</Project>
       <Name>NLoop.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\NLoop.IO\NLoop.IO.csproj">
-      <Project>{99b9d1f9-90b6-4158-b03d-1ef16e473d87}</Project>
-      <Name>NLoop.IO</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\NLoop.Timing\NLoop.Timing.csproj">
-      <Project>{0284a46c-ba2c-45ce-975b-4f39c6e11353}</Project>
-      <Name>NLoop.Timing</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

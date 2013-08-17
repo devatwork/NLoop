@@ -45,6 +45,7 @@
     <Compile Include="EventLoopTests.cs" />
     <Compile Include="EventLoopWorkerTests.cs" />
     <Compile Include="Promises\DeferredTests.cs" />
+    <Compile Include="Promises\PromiseAssert.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

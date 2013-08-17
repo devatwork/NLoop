@@ -1,5 +1,7 @@
 ﻿using System;
+using System.IO;
 using NLoop.Core;
+using NLoop.IO;
 using NLoop.Timing;
 
 namespace NLoop.TestApp
@@ -14,13 +16,17 @@ namespace NLoop.TestApp
 			// start it with a callback
 			loop.Start(() => Console.WriteLine("Event loop has started"));
 
-			// prints a timeout after 1 second
-			var cancel = loop.SetInterval(() => Console.WriteLine("Hello"), TimeSpan.FromSeconds(1));
+			// read the app.config
+			var appConfigFile = new FileInfo("NLoop.TestApp.exe.config");
+			var promise = appConfigFile.ReadAllBytes(loop);
+			promise.Then(content => {
+				Console.WriteLine("Success!! read {0} bytes from app.config", content.Length);
+			}, reason => {
+				Console.WriteLine("Dread!! got an error: {0}", reason);
+			});
 
-			// unless cancel is invoked within 1 second
-			cancel();
-
-			Console.WriteLine("Event loop is processing, press any key to quit");
+			// wait
+			Console.WriteLine("Event loop is processing, press any key to exit");
 			Console.Read();
 
 			// we are done, dispose the loop so resources will be cleaned up
