@@ -87,5 +87,20 @@ namespace NLoop.Core.Tests
 			Assert.That(worker.IsRunning, Is.True);
 			Assert.That(workDone.WaitOne(100), Is.True);
 		}
+		[Test]
+		public void ThrowIfDisposed()
+		{
+			// arrange
+			var nextCallback = new Func<Action>(() => null);
+			var worker = new EventLoopWorker(nextCallback);
+
+			// act
+			worker.Dispose();
+
+			// assert
+			Assert.That(() => worker.IsRunning, Throws.InstanceOf<ObjectDisposedException>());
+			Assert.That(() => worker.Start(), Throws.InstanceOf<ObjectDisposedException>());
+			Assert.That(() => worker.Stop(), Throws.InstanceOf<ObjectDisposedException>());
+		}
 	}
 }

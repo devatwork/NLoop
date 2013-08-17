@@ -1,14 +1,19 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using NLoop.Core.Utils;
 
 namespace NLoop.Core
 {
 	/// <summary>
 	/// Implements the worker for the <see cref="EventLoop"/>. The worker spins and processes the <see cref="EventLoop.callbackQueue"/>.
 	/// </summary>
-	public class EventLoopWorker
+	public class EventLoopWorker : Disposable
 	{
+		/// <summary>
+		/// Grants the worker 10 seconds to finish work before shutting down.
+		/// </summary>
+		private static readonly TimeSpan DisposeWaitTimeout = new TimeSpan(0, 0, 10);
 		/// <summary>
 		/// Gets the next callback from the <see cref="EventLoop.callbackQueue"/>.
 		/// </summary>
@@ -24,9 +29,17 @@ namespace NLoop.Core
 		/// <summary>
 		/// Gets a flag whether this worker is running or not.
 		/// </summary>
+		/// <exception cref="ObjectDisposedException">Thrown if this worker has been disposed of.</exception>
 		public bool IsRunning
 		{
-			get { return !stopHandle.WaitOne(0); }
+			get
+			{
+				// check if we are not disposed
+				CheckDisposed();
+
+				// return the state of the stop handle
+				return !stopHandle.WaitOne(0);
+			}
 		}
 		/// <summary>
 		/// Constructs a new event loop worker.
@@ -44,12 +57,17 @@ namespace NLoop.Core
 
 			// create the new worker
 			worker = Task.Factory.StartNew(() => { });
+			worker.Wait();
 		}
 		/// <summary>
 		/// Starts doing work on this <see cref="EventLoopWorker"/>.
 		/// </summary>
+		/// <exception cref="ObjectDisposedException">Thrown if this worker has been disposed of.</exception>
 		public void Start()
 		{
+			// check if we are not disposed
+			CheckDisposed();
+
 			// first clear the stop handle, which enables the worker loop to rung
 			stopHandle.Reset();
 
@@ -59,8 +77,13 @@ namespace NLoop.Core
 		/// <summary>
 		/// Stops doing work.
 		/// </summary>
+		/// <exception cref="ObjectDisposedException">Thrown if this worker has been disposed of.</exception>
 		public void Stop()
 		{
+			// check if we are not disposed
+			CheckDisposed();
+
+			// signal the worker to stop processing
 			stopHandle.Set();
 		}
 		/// <summary>
@@ -94,6 +117,31 @@ namespace NLoop.Core
 
 			// dispose the incoming task
 			incomingTask.Dispose();
+		}
+		/// <summary>
+		/// Dispose resources. Override this method in derived classes. Unmanaged resources should always be released
+		/// when this method is called. Managed resources may only be disposed of if disposeManagedResources is true.
+		/// </summary>
+		/// <param name="disposeManagedResources">A value which indicates whether managed resources may be disposed of.</param>
+		protected override void DisposeResources(bool disposeManagedResources)
+		{
+			// we only have managed resources
+			if (!disposeManagedResources)
+				return;
+
+			// check if the worker is running
+			if (!stopHandle.WaitOne(0))
+			{
+				// stop executing work
+				stopHandle.Set();
+
+				// wait DisposeWaitTimeout for the worker to finish processing, that should be enough, if not tough luck
+				worker.Wait(DisposeWaitTimeout);
+			}
+
+			// cleanup
+			worker.Dispose();
+			stopHandle.Dispose();
 		}
 	}
 }
