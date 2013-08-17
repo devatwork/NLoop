@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 
-[assembly: AssemblyTitle("NLoop")]
+[assembly: AssemblyTitle("NLoop.Core")]
 [assembly: AssemblyDescription("An event loop implementation for C#")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]

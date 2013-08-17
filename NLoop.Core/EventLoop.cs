@@ -2,7 +2,7 @@
 using System.Collections.Concurrent;
 using System.Threading;
 
-namespace NLoop
+namespace NLoop.Core
 {
 	/// <summary>
 	/// Implements the core API of the event loop.

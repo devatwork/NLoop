@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace NLoop
+namespace NLoop.Core
 {
 	/// <summary>
 	/// Implements the worker for the <see cref="EventLoop"/>. The worker spins and processes the <see cref="EventLoop.callbackQueue"/>.

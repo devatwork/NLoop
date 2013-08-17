@@ -7,8 +7,8 @@
     <ProjectGuid>{2CAD14F2-3BEF-4F96-8677-5C0D4D59EB06}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>NLoop</RootNamespace>
-    <AssemblyName>NLoop</AssemblyName>
+    <RootNamespace>NLoop.Core</RootNamespace>
+    <AssemblyName>NLoop.Core</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -21,7 +21,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DocumentationFile>bin\NLoop.xml</DocumentationFile>
+    <DocumentationFile>bin\NLoop.Core.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -31,7 +31,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DocumentationFile>bin\NLoop.xml</DocumentationFile>
+    <DocumentationFile>bin\NLoop.Core.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
