@@ -34,12 +34,12 @@ namespace NLoop.Core
 			get { return Thread.VolatileRead(ref startedState) == 1; }
 		}
 		/// <summary>
-		/// Adds a new <paramref name="callback" /> to the event loop.
+		/// Schedules a new <paramref name="callback" /> for execution on this event loop.
 		/// </summary>
-		/// <param name="callback">The callback which to add to this event loop.</param>
+		/// <param name="callback">The callback which to schedule for execution.</param>
 		/// <exception cref="ArgumentNullException">Thrown if <paramref name="callback"/> is null.</exception>
 		/// <exception cref="ObjectDisposedException">Thrown if this worker has been disposed of.</exception>
-		public void Add(Action callback)
+		public void Schedule(Action callback)
 		{
 			// validate arguments
 			if (callback == null)
@@ -68,7 +68,7 @@ namespace NLoop.Core
 			CheckDisposed();
 
 			// add the initial callback to this loop
-			Add(callback);
+			Schedule(callback);
 
 			// Attempt to move the started state from 0 to 1. If successful, we can be assured that
 			// this thread is the first thread to do so, and can safely create a worker for this event loop

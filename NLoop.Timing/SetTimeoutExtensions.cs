@@ -38,7 +38,7 @@ namespace NLoop.Timing
 					untrack();
 
 					// schedule the callback for execution
-					eventLoop.Add(callback);
+					eventLoop.Schedule(callback);
 				}, null, timeout, Timeout.InfiniteTimeSpan);
 
 				// dispose the timer if the cts is cancelled
@@ -79,7 +79,7 @@ namespace NLoop.Timing
 						return;
 
 					// schedule the callback for execution
-					eventLoop.Add(callback);
+					eventLoop.Schedule(callback);
 				}, null, timeout, timeout);
 
 				// dispose the timer if the cts is cancelled

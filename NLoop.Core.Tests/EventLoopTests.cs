@@ -44,12 +44,12 @@ namespace NLoop.Core.Tests
 			Assert.That(wait.CurrentCount, Is.EqualTo(0));
 		}
 		[Test]
-		public void AddParameterChecking()
+		public void ScheduleParameterChecking()
 		{
-			Assert.That(() => new EventLoop().Add(null), Throws.InstanceOf<ArgumentNullException>());
+			Assert.That(() => new EventLoop().Schedule(null), Throws.InstanceOf<ArgumentNullException>());
 		}
 		[Test]
-		public void Add()
+		public void Schedule()
 		{
 			// arrange
 			var loop = new EventLoop();
@@ -57,10 +57,10 @@ namespace NLoop.Core.Tests
 			var counter = 0;
 
 			// act
-			loop.Add(() => counter++);
-			loop.Add(() => counter++);
+			loop.Schedule(() => counter++);
+			loop.Schedule(() => counter++);
 			loop.Start(() => wait.Set());
-			loop.Add(() => counter++);
+			loop.Schedule(() => counter++);
 
 			// assert
 			Assert.That(loop.IsStarted, Is.True);
@@ -79,7 +79,7 @@ namespace NLoop.Core.Tests
 			for (var index = 0; index < loops; index++)
 			{
 				var localIndex = index;
-				loop.Add(() => {
+				loop.Schedule(() => {
 					Thread.Sleep(sleep);
 					if (localIndex == loops - 1)
 						wait.Set();
