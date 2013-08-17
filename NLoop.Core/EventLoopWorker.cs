@@ -27,7 +27,7 @@ namespace NLoop.Core
 		/// </summary>
 		private readonly ManualResetEvent stopHandle = new ManualResetEvent(true);
 		/// <summary>
-		/// Flags .
+		/// WaitHandle to set if there is more work to be done.
 		/// </summary>
 		private readonly ManualResetEvent moreWorkHandle = new ManualResetEvent(true);
 		/// <summary>
