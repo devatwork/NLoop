@@ -23,6 +23,34 @@ Console.Read();
 loop.Dispose();
 ```
 
+## Timing
+
+The NLoop.Timing assembly provides timing related extension methods for the event loop.
+
+### SetTimeout
+
+Executes ```callback``` once after ```timeout```.
+
+```csharp
+// prints a message after 1 second
+var cancel = loop.SetTimeout(() => Console.WriteLine("Something needs to happen right now!"), TimeSpan.FromSeconds(1));
+
+// unless cancel is invoked within 1 second
+cancel();
+```
+
+### SetInterval
+
+Executes ```callback``` every ```timeout```.
+
+```csharp
+// prints a message every second
+var cancel = loop.SetInterval(() => Console.WriteLine("I'm alive!"), TimeSpan.FromSeconds(1));
+
+// stop after cancel is invoked
+cancel();
+```
+
 ## Copyright
 
 Copyright © 2013 Bert Willems and contributors
