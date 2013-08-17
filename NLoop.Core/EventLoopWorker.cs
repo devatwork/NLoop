@@ -20,7 +20,14 @@ namespace NLoop.Core
 		/// <summary>
 		/// Synchronizes the stopping of the <see cref="worker"/> and the <see cref="EventLoop"/>.
 		/// </summary>
-		private readonly ManualResetEvent stopHandle = new ManualResetEvent(false);
+		private readonly ManualResetEvent stopHandle = new ManualResetEvent(true);
+		/// <summary>
+		/// Gets a flag whether this worker is running or not.
+		/// </summary>
+		public bool IsRunning
+		{
+			get { return !stopHandle.WaitOne(0); }
+		}
 		/// <summary>
 		/// Constructs a new event loop worker.
 		/// </summary>
