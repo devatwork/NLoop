@@ -1,6 +1,8 @@
 # NLoop
 
-An event loop implementation for .NET
+This library provides a high-performance managed event loop implementation for .NET, inspired by the Node.JS event loop model.
+
+The callbacks executed on the event loop are all executed on the same thread, so you don't have to deal with threading issues.
 
 ## Copyright
 
