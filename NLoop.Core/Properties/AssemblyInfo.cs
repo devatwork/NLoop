@@ -11,7 +11,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("NLoop")]
-[assembly: AssemblyCopyright("Copyright © Bert Willems and contributers 2013")]
+[assembly: AssemblyCopyright("Copyright © 2013 Bert Willems and contributors")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
