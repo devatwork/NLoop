@@ -5,6 +5,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NLoop.Core", "NLoop.Core\NL
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NLoop.Core.Tests", "NLoop.Core.Tests\NLoop.Core.Tests.csproj", "{F1FB7E42-3C2E-46FC-B413-A5CF198392B9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NLoop.Timing.Tests", "NLoop.Timing.Tests\NLoop.Timing.Tests.csproj", "{737A47A9-66A8-4990-A6C4-BB729250CEC8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NLoop.Timing", "NLoop.Timing\NLoop.Timing.csproj", "{0284A46C-BA2C-45CE-975B-4F39C6E11353}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,6 +23,14 @@ Global
 		{F1FB7E42-3C2E-46FC-B413-A5CF198392B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F1FB7E42-3C2E-46FC-B413-A5CF198392B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F1FB7E42-3C2E-46FC-B413-A5CF198392B9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{737A47A9-66A8-4990-A6C4-BB729250CEC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{737A47A9-66A8-4990-A6C4-BB729250CEC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{737A47A9-66A8-4990-A6C4-BB729250CEC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{737A47A9-66A8-4990-A6C4-BB729250CEC8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0284A46C-BA2C-45CE-975B-4F39C6E11353}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0284A46C-BA2C-45CE-975B-4F39C6E11353}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0284A46C-BA2C-45CE-975B-4F39C6E11353}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0284A46C-BA2C-45CE-975B-4F39C6E11353}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
