@@ -27,6 +27,22 @@ namespace NLoop.Core.Tests
 			Assert.That(() => wait.WaitOne(100), Is.True);
 		}
 		[Test]
+		public void StartWithCallbackCalledTwice()
+		{
+			// arrange
+			var loop = new EventLoop();
+			var wait = new CountdownEvent(2);
+
+			// act
+			loop.Start(() => wait.Signal());
+			loop.Start(() => wait.Signal());
+
+			// assert
+			Assert.That(loop.IsStarted, Is.True);
+			Assert.That(() => wait.WaitHandle.WaitOne(100), Is.True);
+			Assert.That(wait.CurrentCount, Is.EqualTo(0));
+		}
+		[Test]
 		public void AddParameterChecking()
 		{
 			Assert.That(() => new EventLoop().Add(null), Throws.InstanceOf<ArgumentNullException>());
@@ -49,6 +65,32 @@ namespace NLoop.Core.Tests
 			Assert.That(loop.IsStarted, Is.True);
 			Assert.That(() => wait.WaitOne(100), Is.True);
 			Assert.That(counter, Is.EqualTo(3));
+		}
+		[Test]
+		public void Stop()
+		{
+			// arrange
+			var loop = new EventLoop();
+			var wait = new AutoResetEvent(false);
+			const int loops = 10;
+			const int sleep = 10;
+			const int maxSleep = (loops + 1)*sleep;
+			for (var index = 0; index < loops; index++)
+			{
+				var localIndex = index;
+				loop.Add(() => {
+					Thread.Sleep(sleep);
+					if (localIndex == loops - 1)
+						wait.Set();
+				});
+			}
+
+			// act
+			loop.Start(() => { });
+			loop.Stop();
+
+			// assert
+			Assert.That(() => wait.WaitOne(maxSleep), Is.False);
 		}
 	}
 }

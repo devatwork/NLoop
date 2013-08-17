@@ -45,26 +45,39 @@ namespace NLoop.Core
 		/// <summary>
 		/// Starts this event loop and add the given <paramref name="callback"/> to it to execute first.
 		/// </summary>
-		/// <param name="callback"></param>
+		/// <param name="callback">The callback which to execute on the started event loop.</param>
+		/// <exception cref="ArgumentNullException">Thrown if <paramref name="callback"/> is null.</exception>
 		public void Start(Action callback)
 		{
 			// validate arguments
 			if (callback == null)
 				throw new ArgumentNullException("callback");
 
-			// Attempt to move the started state from 0 to 1. If successful, we can be assured that
-			// this thread is the first thread to do so, and can safely start this event loop.
-			if (Interlocked.CompareExchange(ref startedState, 1, 0) != 0)
-				throw new InvalidOperationException("This event loop was already started");
-
 			// add the initial callback to this loop
 			Add(callback);
 
-			// create the event loop worker
-			worker = new EventLoopWorker(NextCallback);
+			// Attempt to move the started state from 0 to 1. If successful, we can be assured that
+			// this thread is the first thread to do so, and can safely create a worker for this event loop
+			if (Interlocked.CompareExchange(ref startedState, 1, 0) == 0)
+			{
+				// create the event loop worker
+				worker = new EventLoopWorker(NextCallback);
+			}
 
 			// start the worker
 			worker.Start();
+		}
+		/// <summary>
+		/// Stops this event loop. 
+		/// </summary>
+		public void Stop()
+		{
+			// if the event loop was not started there is not much to do
+			if (!IsStarted || worker == null)
+				return;
+
+			// tell the worker to stop
+			worker.Stop();
 		}
 		/// <summary>
 		/// Tries to dequeue the next callback from the <see cref="callbackQueue"/>.
