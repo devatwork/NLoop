@@ -15,21 +15,39 @@ namespace NLoop.Core
 		/// </summary>
 		private static readonly TimeSpan DisposeWaitTimeout = new TimeSpan(0, 0, 10);
 		/// <summary>
+		/// WaitHandle to set if there is more work to be done.
+		/// </summary>
+		private readonly ManualResetEventSlim moreWorkHandle = new ManualResetEventSlim(true);
+		/// <summary>
 		/// Gets the next callback from the <see cref="EventLoop.callbackQueue"/>.
 		/// </summary>
 		private readonly Func<Action> nextCallback;
-		/// <summary>
-		/// Task on which the callbacks are invoked.
-		/// </summary>
-		private readonly Task worker;
 		/// <summary>
 		/// Synchronizes the stopping of the <see cref="worker"/> and the <see cref="EventLoop"/>.
 		/// </summary>
 		private readonly ManualResetEventSlim stopHandle = new ManualResetEventSlim(true);
 		/// <summary>
-		/// WaitHandle to set if there is more work to be done.
+		/// Task on which the callbacks are invoked.
 		/// </summary>
-		private readonly ManualResetEventSlim moreWorkHandle = new ManualResetEventSlim(true);
+		private readonly Task worker;
+		/// <summary>
+		/// Constructs a new event loop worker.
+		/// </summary>
+		/// <param name="nextCallback">A method which to invoke to get the next callack from the <see cref="EventLoop.callbackQueue"/>.</param>
+		/// <exception cref="ArgumentNullException">Thrown if <paramref name="nextCallback"/> is null.</exception>
+		public EventLoopWorker(Func<Action> nextCallback)
+		{
+			// validate arguments
+			if (nextCallback == null)
+				throw new ArgumentNullException("nextCallback");
+
+			// keep a reference to the event loop
+			this.nextCallback = nextCallback;
+
+			// create the new worker
+			worker = Task.Factory.StartNew(() => { });
+			worker.Wait();
+		}
 		/// <summary>
 		/// Gets a flag whether this worker is running or not.
 		/// </summary>
@@ -59,24 +77,6 @@ namespace NLoop.Core
 				// return the state of the stop handle
 				return !moreWorkHandle.Wait(0);
 			}
-		}
-		/// <summary>
-		/// Constructs a new event loop worker.
-		/// </summary>
-		/// <param name="nextCallback">A method which to invoke to get the next callack from the <see cref="EventLoop.callbackQueue"/>.</param>
-		/// <exception cref="ArgumentNullException">Thrown if <paramref name="nextCallback"/> is null.</exception>
-		public EventLoopWorker(Func<Action> nextCallback)
-		{
-			// validate arguments
-			if (nextCallback == null)
-				throw new ArgumentNullException("nextCallback");
-
-			// keep a reference to the event loop
-			this.nextCallback = nextCallback;
-
-			// create the new worker
-			worker = Task.Factory.StartNew(() => { });
-			worker.Wait();
 		}
 		/// <summary>
 		/// Starts doing work on this <see cref="EventLoopWorker"/>.

@@ -10,33 +10,33 @@ namespace NLoop.Core.Promises
 	public class Promise<TValue>
 	{
 		/// <summary>
-		/// Holds all the registered <see cref="ResolvedCallback{TResult}"/>.
-		/// </summary>
-		private readonly Queue<ResolvedCallback<TValue>> resolvedCallbacks = new Queue<ResolvedCallback<TValue>>();
-		/// <summary>
 		/// Holds all the registered <see cref="RejectedCallback"/>.
 		/// </summary>
 		private readonly Queue<RejectedCallback> rejectedCallbacks = new Queue<RejectedCallback>();
+		/// <summary>
+		/// Holds all the registered <see cref="ResolvedCallback{TResult}"/>.
+		/// </summary>
+		private readonly Queue<ResolvedCallback<TValue>> resolvedCallbacks = new Queue<ResolvedCallback<TValue>>();
 		/// <summary>
 		/// Holds a reference to the <see cref="IScheduler"/> on which callbacks will be executed.
 		/// </summary>
 		private readonly IScheduler scheduler;
 		/// <summary>
-		/// Holds the state of this promise, <see cref="PromiseStates"/> for candidates.
-		/// </summary>
-		private PromiseStates state = PromiseStates.Unfulfilled;
-		/// <summary>
 		/// Used for synchronizing <see cref="state"/> changes.
 		/// </summary>
 		private readonly object stateSyncRoot = new object();
+		/// <summary>
+		/// Holds the <see cref="Exception"/> if this promise was <see cref="PromiseStates.Rejected"/>.
+		/// </summary>
+		private Exception rejectionReason;
 		/// <summary>
 		/// Holds the <typeparamref name="TValue"/> if this promise was <see cref="PromiseStates.Resolved"/>.
 		/// </summary>
 		private TValue resolvedValue;
 		/// <summary>
-		/// Holds the <see cref="Exception"/> if this promise was <see cref="PromiseStates.Rejected"/>.
+		/// Holds the state of this promise, <see cref="PromiseStates"/> for candidates.
 		/// </summary>
-		private Exception rejectionReason;
+		private PromiseStates state = PromiseStates.Unfulfilled;
 		/// <summary>
 		/// Constructs a new <see cref="Promise{T}"/>.
 		/// </summary>

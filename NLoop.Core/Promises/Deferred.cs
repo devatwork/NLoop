@@ -10,10 +10,6 @@ namespace NLoop.Core.Promises
 	public class Deferred<TValue, TPromise> where TPromise : Promise<TValue>
 	{
 		/// <summary>
-		/// Gets the <see cref="NLoop.Core.Promises.Promise{TValue}"/> for this deferred.
-		/// </summary>
-		public TPromise Promise { get; private set; }
-		/// <summary>
 		/// Constructs a new <see cref="Deferred{TValue,TPromise}"/>.
 		/// </summary>
 		/// <param name="promise">The <typeparamref name="TPromise"/> returned by this deferred.</param>
@@ -26,6 +22,10 @@ namespace NLoop.Core.Promises
 			// create the promise
 			Promise = promise;
 		}
+		/// <summary>
+		/// Gets the <see cref="NLoop.Core.Promises.Promise{TValue}"/> for this deferred.
+		/// </summary>
+		public TPromise Promise { get; private set; }
 		/// <summary>
 		/// Resolves this <see cref="Deferred{TValue,TPromise}"/> with the given <paramref name="value"/>.
 		/// </summary>

@@ -19,13 +19,13 @@ namespace NLoop.Core
 		/// </summary>
 		private readonly ConcurrentDictionary<CancellationToken, IDisposable> resources = new ConcurrentDictionary<CancellationToken, IDisposable>();
 		/// <summary>
-		/// Holds the <see cref="EventLoopWorker"/> used by this event loop.
-		/// </summary>
-		private EventLoopWorker worker;
-		/// <summary>
 		/// A value which indicates the started state. 0 indicates not started, 1 indicates starting or started.
 		/// </summary>
 		private int startedState;
+		/// <summary>
+		/// Holds the <see cref="EventLoopWorker"/> used by this event loop.
+		/// </summary>
+		private EventLoopWorker worker;
 		/// <summary>
 		/// Gets a flag indicating whether this event loop was already started or not.
 		/// </summary>
@@ -50,6 +50,33 @@ namespace NLoop.Core
 			// signal the worker there is more  work
 			if (IsStarted && worker != null)
 				worker.SignalMoreWork();
+		}
+		/// <summary>
+		/// Registers a tracked resource to this event loop. The tracked resource will be disposed of if the event loop is disposed off.
+		/// </summary>
+		/// <param name="token">The <see cref="CancellationToken"/> for the resource.</param>
+		/// <param name="resourceFactory">Creates the new resource.</param>
+		/// <returns>Returns the created <see cref="CancellationTokenSource"/>.</returns>
+		/// <exception cref="ArgumentNullException">Thrown if one of the parameters is null.</exception>
+		public void TrackResource(CancellationToken token, ResourceFactoryCallback resourceFactory)
+		{
+			// validate arguments
+			if (token == null)
+				throw new ArgumentNullException("token");
+			if (resourceFactory == null)
+				throw new ArgumentNullException("resourceFactory");
+
+			// check if we are not disposed
+			CheckDisposed();
+
+			// track the resource
+			resources.AddOrUpdate(token, key => {
+				// get the cleanup dispose action 
+				var cleanup = resourceFactory((out IDisposable disposable) => TryUnregisterResource(token, out disposable));
+
+				// return the cleanup dispose action
+				return cleanup;
+			}, (key, value) => { throw new NotSupportedException("The token was already registered for another resource, this should never happen"); });
 		}
 		/// <summary>
 		/// Starts this event loop and add the given <paramref name="callback"/> to it to execute first.
@@ -95,33 +122,6 @@ namespace NLoop.Core
 
 			// tell the worker to stop
 			worker.Stop();
-		}
-		/// <summary>
-		/// Registers a tracked resource to this event loop. The tracked resource will be disposed of if the event loop is disposed off.
-		/// </summary>
-		/// <param name="token">The <see cref="CancellationToken"/> for the resource.</param>
-		/// <param name="resourceFactory">Creates the new resource.</param>
-		/// <returns>Returns the created <see cref="CancellationTokenSource"/>.</returns>
-		/// <exception cref="ArgumentNullException">Thrown if one of the parameters is null.</exception>
-		public void TrackResource(CancellationToken token, ResourceFactoryCallback resourceFactory)
-		{
-			// validate arguments
-			if (token == null)
-				throw new ArgumentNullException("token");
-			if (resourceFactory == null)
-				throw new ArgumentNullException("resourceFactory");
-
-			// check if we are not disposed
-			CheckDisposed();
-
-			// track the resource
-			resources.AddOrUpdate(token, key => {
-				// get the cleanup dispose action 
-				var cleanup = resourceFactory((out IDisposable disposable) => TryUnregisterResource(token, out disposable));
-
-				// return the cleanup dispose action
-				return cleanup;
-			}, (key, value) => { throw new NotSupportedException("The token was already registered for another resource, this should never happen"); });
 		}
 		/// <summary>
 		/// Dispose resources. Override this method in derived classes. Unmanaged resources should always be released

@@ -9,9 +9,28 @@ namespace NLoop.Core.Tests
 	public class EventLoopTests
 	{
 		[Test]
-		public void StartWithCallbackParameterChecking()
+		public void Schedule()
 		{
-			Assert.That(() => new EventLoop().Start(null), Throws.InstanceOf<ArgumentNullException>());
+			// arrange
+			var loop = new EventLoop();
+			var wait = new AutoResetEvent(false);
+			var counter = 0;
+
+			// act
+			loop.Schedule(() => counter++);
+			loop.Schedule(() => counter++);
+			loop.Start(() => wait.Set());
+			loop.Schedule(() => counter++);
+
+			// assert
+			Assert.That(loop.IsStarted, Is.True);
+			Assert.That(() => wait.WaitOne(100), Is.True);
+			Assert.That(counter, Is.EqualTo(3));
+		}
+		[Test]
+		public void ScheduleParameterChecking()
+		{
+			Assert.That(() => new EventLoop().Schedule(null), Throws.InstanceOf<ArgumentNullException>());
 		}
 		[Test]
 		public void StartWithCallback()
@@ -44,28 +63,9 @@ namespace NLoop.Core.Tests
 			Assert.That(wait.CurrentCount, Is.EqualTo(0));
 		}
 		[Test]
-		public void ScheduleParameterChecking()
+		public void StartWithCallbackParameterChecking()
 		{
-			Assert.That(() => new EventLoop().Schedule(null), Throws.InstanceOf<ArgumentNullException>());
-		}
-		[Test]
-		public void Schedule()
-		{
-			// arrange
-			var loop = new EventLoop();
-			var wait = new AutoResetEvent(false);
-			var counter = 0;
-
-			// act
-			loop.Schedule(() => counter++);
-			loop.Schedule(() => counter++);
-			loop.Start(() => wait.Set());
-			loop.Schedule(() => counter++);
-
-			// assert
-			Assert.That(loop.IsStarted, Is.True);
-			Assert.That(() => wait.WaitOne(100), Is.True);
-			Assert.That(counter, Is.EqualTo(3));
+			Assert.That(() => new EventLoop().Start(null), Throws.InstanceOf<ArgumentNullException>());
 		}
 		[Test]
 		public void Stop()
@@ -108,15 +108,6 @@ namespace NLoop.Core.Tests
 			Assert.That(() => loop.Stop(), Throws.InstanceOf<ObjectDisposedException>());
 		}
 		[Test]
-		public void TrackResourceParameterChecking()
-		{
-			// arrange
-			var cts = new CancellationTokenSource();
-
-			// assert
-			Assert.That(() => new EventLoop().TrackResource(cts.Token, null), Throws.InstanceOf<ArgumentNullException>());
-		}
-		[Test]
 		public void TrackResourceCancel()
 		{
 			// arrange
@@ -150,6 +141,15 @@ namespace NLoop.Core.Tests
 
 			// assert
 			Assert.That(disposed, Is.True);
+		}
+		[Test]
+		public void TrackResourceParameterChecking()
+		{
+			// arrange
+			var cts = new CancellationTokenSource();
+
+			// assert
+			Assert.That(() => new EventLoop().TrackResource(cts.Token, null), Throws.InstanceOf<ArgumentNullException>());
 		}
 		[Test]
 		public void TrackResourceUntrackedDisposed()
