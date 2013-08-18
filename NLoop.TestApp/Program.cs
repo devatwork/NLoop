@@ -1,7 +1,9 @@
 ﻿using System;
 using System.IO;
+using System.Net.Http;
 using NLoop.Core;
 using NLoop.IO;
+using NLoop.Net.Http;
 using NLoop.Timing;
 
 namespace NLoop.TestApp
@@ -21,6 +23,16 @@ namespace NLoop.TestApp
 			var promise = appConfigFile.ReadAllBytes(loop);
 			promise.Then(content => {
 				Console.WriteLine("Success!! read {0} bytes from app.config", content.Length);
+			}, reason => {
+				Console.WriteLine("Dread!! got an error: {0}", reason);
+			});
+
+			// send a web request
+			var httpClient = new HttpClient();
+			var request = new HttpRequestMessage(HttpMethod.Get, "https://www.google.com/");
+			var httpPromise = httpClient.Send(loop, request);
+			httpPromise.Then(content => {
+				Console.WriteLine("Success!! read {0} from google.com", content.StatusCode);
 			}, reason => {
 				Console.WriteLine("Dread!! got an error: {0}", reason);
 			});
