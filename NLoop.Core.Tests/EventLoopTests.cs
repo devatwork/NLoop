@@ -110,15 +110,21 @@ namespace NLoop.Core.Tests
 		[Test]
 		public void TrackResourceParameterChecking()
 		{
-			Assert.That(() => new EventLoop().TrackResource(null), Throws.InstanceOf<ArgumentNullException>());
+			// arrange
+			var cts = new CancellationTokenSource();
+
+			// assert
+			Assert.That(() => new EventLoop().TrackResource(cts.Token, null), Throws.InstanceOf<ArgumentNullException>());
 		}
 		[Test]
 		public void TrackResourceCancel()
 		{
 			// arrange
+			var cts = new CancellationTokenSource();
+			var token = cts.Token;
 			var loop = new EventLoop();
 			var cancelled = false;
-			var cts = loop.TrackResource((token, untrack) => {
+			loop.TrackResource(token, untrack => {
 				token.Register(() => { cancelled = true; });
 				return new DisposeAction(() => { });
 			});
@@ -133,9 +139,11 @@ namespace NLoop.Core.Tests
 		public void TrackResourceDispose()
 		{
 			// arrange
+			var cts = new CancellationTokenSource();
+			var token = cts.Token;
 			var loop = new EventLoop();
 			var disposed = false;
-			var cts = loop.TrackResource((token, untrack) => new DisposeAction(() => { disposed = true; }));
+			loop.TrackResource(token, untrack => new DisposeAction(() => { disposed = true; }));
 
 			// act
 			loop.Dispose();
@@ -147,18 +155,25 @@ namespace NLoop.Core.Tests
 		public void TrackResourceUntrackedDisposed()
 		{
 			// arrange
+			var cts = new CancellationTokenSource();
+			var token = cts.Token;
 			var loop = new EventLoop();
 			var disposed = false;
-			Action doUntrack = null;
-			var cts = loop.TrackResource((token, untrack) => {
+			UnregisterResourceAction doUntrack = null;
+			var disposer = new DisposeAction(() => { disposed = true; });
+			loop.TrackResource(token, untrack => {
 				doUntrack = untrack;
-				return new DisposeAction(() => { disposed = true; });
+				return disposer;
 			});
 
 			// act
-			doUntrack();
+			IDisposable untrackedDisposer;
+			var gotDisposer = doUntrack(out untrackedDisposer);
+			untrackedDisposer.Dispose();
 
 			// assert
+			Assert.That(gotDisposer, Is.True, "Expected to get the disposer back");
+			Assert.That(untrackedDisposer, Is.SameAs(disposer), "Expected the same disposer back");
 			Assert.That(disposed, Is.True);
 		}
 	}

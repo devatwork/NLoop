@@ -36,6 +36,7 @@ namespace NLoop.TestApp
 			}, reason => {
 				Console.WriteLine("Dread!! got an error: {0}", reason);
 			});
+			//httpPromise.Cancel();
 
 			// wait
 			Console.WriteLine("Event loop is processing, press any key to exit");

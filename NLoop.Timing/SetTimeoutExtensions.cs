@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using NLoop.Core;
+using NLoop.Core.Utils;
 
 namespace NLoop.Timing
 {
@@ -25,26 +26,43 @@ namespace NLoop.Timing
 			if (callback == null)
 				throw new ArgumentNullException("callback");
 
+			// create the cancellation token
+			var cts = new CancellationTokenSource();
+			var token = cts.Token;
+
 			// create a resource managed by the event loop
-			var cts = eventLoop.TrackResource((token, untrack) => {
+			eventLoop.TrackResource(token, untrack => {
 				// create the timer which will schedule the callback
 				var timer = new Timer(state => {
-					// check if the operation was cancelled
-					if (token.IsCancellationRequested)
+					// set timeout only works once, so it does not longer have to be a managed resource
+					IDisposable disposer;
+					if (!untrack(out disposer))
 						return;
 
-					// set timeout only works once, so it does not longer have to be a managed resource
-					untrack();
+					// check if the operation was not cancelled
+					if (!token.IsCancellationRequested)
+					{
+						// schedule the callback for execution
+						eventLoop.Schedule(callback);
+					}
 
-					// schedule the callback for execution
-					eventLoop.Schedule(callback);
+					// dispose the timer and cts
+					disposer.Dispose();
 				}, null, timeout, Timeout.InfiniteTimeSpan);
 
-				// untrack the timer resource if it is cancelled
-				token.Register(untrack);
+				// dispose all resources
+				var dispose = new DisposeAction(() => {
+					IDisposable disposer;
+					untrack(out disposer);
+					timer.Dispose();
+					cts.Dispose();
+				});
 
-				// return the created timer
-				return timer;
+				// untrack the timer resource if it is cancelled
+				token.Register(dispose.Dispose);
+
+				// return the dispose action
+				return dispose;
 			});
 
 			// return an action which cancels the cts
@@ -66,8 +84,12 @@ namespace NLoop.Timing
 			if (callback == null)
 				throw new ArgumentNullException("callback");
 
+			// create the cancellation token
+			var cts = new CancellationTokenSource();
+			var token = cts.Token;
+
 			// create a resource managed by the event loop
-			var cts = eventLoop.TrackResource((token, untrack) => {
+			eventLoop.TrackResource(token, untrack => {
 				// create the timer which will schedule the callback
 				var timer = new Timer(state => {
 					// check if the operation was cancelled
@@ -78,11 +100,19 @@ namespace NLoop.Timing
 					eventLoop.Schedule(callback);
 				}, null, timeout, timeout);
 
-				// untrack the timer resource if it is cancelled
-				token.Register(untrack);
+				// dispose all resources
+				var dispose = new DisposeAction(() => {
+					IDisposable disposer;
+					untrack(out disposer);
+					timer.Dispose();
+					cts.Dispose();
+				});
 
-				// return the created timer
-				return timer;
+				// untrack the timer resource if it is cancelled
+				token.Register(dispose.Dispose);
+
+				// return the dispose action
+				return dispose;
 			});
 
 			// return an action which cancels the cts
