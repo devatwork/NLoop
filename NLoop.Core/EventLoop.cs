@@ -8,7 +8,7 @@ namespace NLoop.Core
 	/// <summary>
 	/// Implements the core API of the event loop.
 	/// </summary>
-	public class EventLoop : Disposable, IScheduler
+	public class EventLoop : Disposable, IResourceTrackingScheduler
 	{
 		/// <summary>
 		/// Holds all the callbacks to event handlers which need to be invoked in this event loop.

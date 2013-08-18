@@ -13,16 +13,16 @@ namespace NLoop.Timing
 		/// <summary>
 		/// Invokes the <paramref name="callback"/> after <paramref name="timeout"/> elapsed.
 		/// </summary>
-		/// <param name="eventLoop">The <see cref="EventLoop"/> on which the timeout event will be executed.</param>
+		/// <param name="resouceResourceTrackingScheduler">The <see cref="IResourceTrackingScheduler"/> on which the timeout event will be executed.</param>
 		/// <param name="callback">The callback which to invoke on timeout.</param>
 		/// <param name="timeout">The timeout which to wait before <paramref name="callback"/> should be executed.</param>
 		/// <returns>Returns a <see cref="Action"/> which cancels the timeout.</returns>
 		/// <exception cref="ArgumentNullException">Thrown if one of the parameters is null.</exception>
-		public static Action SetTimeout(this EventLoop eventLoop, Action callback, TimeSpan timeout)
+		public static Action SetTimeout(this IResourceTrackingScheduler resouceResourceTrackingScheduler, Action callback, TimeSpan timeout)
 		{
 			// validate arguments
-			if (eventLoop == null)
-				throw new ArgumentNullException("eventLoop");
+			if (resouceResourceTrackingScheduler == null)
+				throw new ArgumentNullException("resouceResourceTrackingScheduler");
 			if (callback == null)
 				throw new ArgumentNullException("callback");
 
@@ -31,7 +31,7 @@ namespace NLoop.Timing
 			var token = cts.Token;
 
 			// create a resource managed by the event loop
-			eventLoop.TrackResource(token, untrack => {
+			resouceResourceTrackingScheduler.TrackResource(token, untrack => {
 				// create the timer which will schedule the callback
 				var timer = new Timer(state => {
 					// set timeout only works once, so it does not longer have to be a managed resource
@@ -43,7 +43,7 @@ namespace NLoop.Timing
 					if (!token.IsCancellationRequested)
 					{
 						// schedule the callback for execution
-						eventLoop.Schedule(callback);
+						resouceResourceTrackingScheduler.Schedule(callback);
 					}
 
 					// dispose the timer and cts
@@ -71,16 +71,16 @@ namespace NLoop.Timing
 		/// <summary>
 		/// Invokes the <paramref name="callback"/> after every elapsed <paramref name="timeout"/>.
 		/// </summary>
-		/// <param name="eventLoop">The <see cref="EventLoop"/> on which the timeout event will be executed.</param>
+		/// <param name="resouceResourceTrackingScheduler">The <see cref="IResourceTrackingScheduler"/> on which the timeout event will be executed.</param>
 		/// <param name="callback">The callback which to invoke on timeout.</param>
 		/// <param name="timeout">The timeout which to wait before <paramref name="callback"/> should be executed.</param>
 		/// <returns>Returns a <see cref="Action"/> which cancels the interval.</returns>
 		/// <exception cref="ArgumentNullException">Thrown if one of the parameters is null.</exception>
-		public static Action SetInterval(this EventLoop eventLoop, Action callback, TimeSpan timeout)
+		public static Action SetInterval(this IResourceTrackingScheduler resouceResourceTrackingScheduler, Action callback, TimeSpan timeout)
 		{
 			// validate arguments
-			if (eventLoop == null)
-				throw new ArgumentNullException("eventLoop");
+			if (resouceResourceTrackingScheduler == null)
+				throw new ArgumentNullException("resouceResourceTrackingScheduler");
 			if (callback == null)
 				throw new ArgumentNullException("callback");
 
@@ -89,7 +89,7 @@ namespace NLoop.Timing
 			var token = cts.Token;
 
 			// create a resource managed by the event loop
-			eventLoop.TrackResource(token, untrack => {
+			resouceResourceTrackingScheduler.TrackResource(token, untrack => {
 				// create the timer which will schedule the callback
 				var timer = new Timer(state => {
 					// check if the operation was cancelled
@@ -97,7 +97,7 @@ namespace NLoop.Timing
 						return;
 
 					// schedule the callback for execution
-					eventLoop.Schedule(callback);
+					resouceResourceTrackingScheduler.Schedule(callback);
 				}, null, timeout, timeout);
 
 				// dispose all resources
