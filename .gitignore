@@ -9,7 +9,7 @@
 *.userprefs
 .DS_Store
 deploy/
-build/
+[Bb]uild/
 [Bb]in/
 [Dd]ebug/
 [Oo]bj/
@@ -22,3 +22,4 @@ src/Content/
 
 *.sublime-project
 *.sublime-workspace
+*.log
