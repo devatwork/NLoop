@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("NLoop.Core")]
 [assembly: AssemblyDescription("An event loop implementation for .NET")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Bert Willems and contributors")]
 [assembly: AssemblyProduct("NLoop")]
 [assembly: AssemblyCopyright("Copyright © 2013 Bert Willems and contributors")]
 [assembly: AssemblyTrademark("")]

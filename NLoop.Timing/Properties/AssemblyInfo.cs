@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("NLoop.Timing")]
 [assembly: AssemblyDescription("Provides timing events for NLoop")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Bert Willems and contributors")]
 [assembly: AssemblyProduct("NLoop.Timing")]
 [assembly: AssemblyCopyright("Copyright © 2013 Bert Willems and contributors")]
 [assembly: AssemblyTrademark("")]

@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("NLoop.Net")]
 [assembly: AssemblyDescription("Provides extension methods for the System.Net.* namespaces")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Bert Willems and contributors")]
 [assembly: AssemblyProduct("NLoop.Net")]
 [assembly: AssemblyCopyright("Copyright © 2013 Bert Willems and contributors")]
 [assembly: AssemblyTrademark("")]

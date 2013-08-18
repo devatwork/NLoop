@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("NLoop.IO")]
 [assembly: AssemblyDescription("Provides I/O for NLoop")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Bert Willems and contributors")]
 [assembly: AssemblyProduct("NLoop.IO")]
 [assembly: AssemblyCopyright("Copyright © 2013 Bert Willems and contributors")]
 [assembly: AssemblyTrademark("")]

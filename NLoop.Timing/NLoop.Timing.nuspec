@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd">
+	<metadata>
+		<id>$id$</id>
+		<version>$version$</version>
+		<title>$title$</title>
+		<authors>$author$</authors>
+		<owners>$author$</owners>
+		<licenseUrl>https://raw.github.com/PremotionSoftwareSolutions/NLoop/master/LICENSE</licenseUrl>
+		<projectUrl>https://github.com/PremotionSoftwareSolutions/NLoop</projectUrl>
+		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+		<description>$description$</description>
+		<releaseNotes>Development release.</releaseNotes>
+		<copyright>Copyright 2013 Bert Willems and contributors</copyright>
+		<tags>NLoop</tags>
+		<frameworkAssemblies>
+			<frameworkAssembly assemblyName="System" targetFramework="net45" />
+			<frameworkAssembly assemblyName="System.Core" targetFramework="net45" />
+		</frameworkAssemblies>
+		<dependencies>
+			<dependency id="NLoop.Core" />
+		</dependencies>
+	</metadata>
+</package>
