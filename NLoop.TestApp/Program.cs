@@ -18,24 +18,20 @@ namespace NLoop.TestApp
 			// start it with a callback
 			loop.Start(() => Console.WriteLine("Event loop has started"));
 
+			// start a timer
+			loop.SetTimeout(() => Console.WriteLine("Hello, I am a timeout happening after 1 second"), TimeSpan.FromSeconds(1));
+			loop.SetInterval(() => Console.WriteLine("Hello, I am an interval happening every 2 seconds"), TimeSpan.FromSeconds(2));
+
 			// read the app.config
 			var appConfigFile = new FileInfo("NLoop.TestApp.exe.config");
 			var promise = appConfigFile.ReadAllBytes(loop);
-			promise.Then(content => {
-				Console.WriteLine("Success!! read {0} bytes from app.config", content.Length);
-			}, reason => {
-				Console.WriteLine("Dread!! got an error: {0}", reason);
-			});
+			promise.Then(content => Console.WriteLine("Success!! read {0} bytes from app.config", content.Length), reason => Console.WriteLine("Dread!! got an error: {0}", reason));
 
 			// send a web request
 			var httpClient = new HttpClient();
 			var request = new HttpRequestMessage(HttpMethod.Get, "https://www.google.com/");
 			var httpPromise = httpClient.Send(loop, request);
-			httpPromise.Then(content => {
-				Console.WriteLine("Success!! read {0} from google.com", content.StatusCode);
-			}, reason => {
-				Console.WriteLine("Dread!! got an error: {0}", reason);
-			});
+			httpPromise.Then(content => Console.WriteLine("Success!! read {0} from google.com", content.StatusCode), reason => Console.WriteLine("Dread!! got an error: {0}", reason));
 			//httpPromise.Cancel();
 
 			// wait
