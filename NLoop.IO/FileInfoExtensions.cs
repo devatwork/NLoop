@@ -27,7 +27,7 @@ namespace NLoop.IO
 				throw new ArgumentNullException("scheduler");
 
 			// create the deferred
-			var deferred = new Deferred<byte[]>(scheduler);
+			var deferred = scheduler.Defer<byte[]>();
 
 			// open the file with the async flag
 			Task.Run(() => {
