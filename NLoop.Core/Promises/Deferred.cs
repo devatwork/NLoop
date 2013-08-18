@@ -6,41 +6,44 @@ namespace NLoop.Core.Promises
 	/// Represents work that is not yet finished.
 	/// </summary>
 	/// <typeparam name="TValue">The type of value.</typeparam>
-	public class Deferred<TValue>
+	/// <typeparam name="TPromise">The type of <see cref="NLoop.Core.Promises.Promise{TValue}"/> returned by this deferred.</typeparam>
+	public class Deferred<TValue, TPromise> where TPromise : Promise<TValue>
 	{
 		/// <summary>
 		/// Gets the <see cref="NLoop.Core.Promises.Promise{TValue}"/> for this deferred.
 		/// </summary>
-		public Promise<TValue> Promise { get; private set; }
+		public TPromise Promise { get; private set; }
 		/// <summary>
-		/// Constructs a new <see cref="Deferred{T}"/>.
+		/// Constructs a new <see cref="Deferred{TValue,TPromise}"/>.
 		/// </summary>
-		/// <param name="scheduler">The <see cref="IScheduler"/> on which to execute callbacks.</param>
-		public Deferred(IScheduler scheduler)
+		/// <param name="promise">The <typeparamref name="TPromise"/> returned by this deferred.</param>
+		internal Deferred(TPromise promise)
 		{
 			// validate arguments
-			if (scheduler == null)
-				throw new ArgumentNullException("scheduler");
+			if (promise == null)
+				throw new ArgumentNullException("promise");
 
 			// create the promise
-			Promise = new Promise<TValue>(scheduler);
+			Promise = promise;
 		}
 		/// <summary>
-		/// Resolves this <see cref="Deferred{TValue}"/> with the given <paramref name="value"/>.
+		/// Resolves this <see cref="Deferred{TValue,TPromise}"/> with the given <paramref name="value"/>.
 		/// </summary>
 		/// <param name="value">The <typeparamref name="TValue"/>.</param>
-		public void Resolve(TValue value)
+		/// <returns>Returns true if the state change was successful, otherwise false.</returns>
+		public bool Resolve(TValue value)
 		{
-			Promise.Resolve(value);
+			return Promise.Resolve(value);
 		}
 		/// <summary>
-		/// Rejects this <see cref="Deferred{TValue}"/> with the given <paramref name="reason"/>.
+		/// Rejects this <see cref="Deferred{TValue,TPromise}"/> with the given <paramref name="reason"/>.
 		/// </summary>
 		/// <param name="reason">The <see cref="Exception"/>.</param>
 		/// <exception cref="Exception">Thrown if <paramref name="reason"/> is null.</exception>
-		public void Reject(Exception reason)
+		/// <returns>Returns true if the state change was successful, otherwise false.</returns>
+		public bool Reject(Exception reason)
 		{
-			Promise.Reject(reason);
+			return Promise.Reject(reason);
 		}
 	}
 }

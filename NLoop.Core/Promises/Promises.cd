@@ -15,22 +15,32 @@
     <Compartments>
       <Compartment Name="Nested Types" Collapsed="false" />
     </Compartments>
-    <NestedTypes>
-      <Enum Name="NLoop.Core.Promises.Promise&lt;TValue&gt;.PromiseState">
-        <TypeIdentifier>
-          <NewMemberFileName>Promises\Promise.cs</NewMemberFileName>
-        </TypeIdentifier>
-      </Enum>
-    </NestedTypes>
     <TypeIdentifier>
-      <HashCode>AABAAAAAAACAAAAAEQAAAEAAgAAIAAAEAAAAAAAACIE=</HashCode>
+      <HashCode>AABAAAAAAACAAQAAEQAAAEAAAAAIAABEAAAAAAAACIE=</HashCode>
       <FileName>Promises\Promise.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="state" />
+    </ShowAsAssociation>
     <ShowAsCollectionAssociation>
-      <Field Name="rejectedCallbacks" />
       <Field Name="resolvedCallbacks" />
+      <Field Name="rejectedCallbacks" />
     </ShowAsCollectionAssociation>
   </Class>
+  <Class Name="NLoop.Core.Promises.CancelablePromise&lt;TValue&gt;">
+    <Position X="1.75" Y="8.25" Width="3.75" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Promises\CancelablePromise.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="NLoop.Core.Promises.PromiseStates">
+    <Position X="8" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACQgAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Promises\PromiseStates.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
   <Delegate Name="NLoop.Core.Promises.ResolvedCallback&lt;TValue&gt;">
     <Position X="10.25" Y="4.75" Width="2.25" />
     <TypeIdentifier>
