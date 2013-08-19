@@ -68,32 +68,6 @@ namespace NLoop.Core.Tests
 			Assert.That(() => new EventLoop().Start(null), Throws.InstanceOf<ArgumentNullException>());
 		}
 		[Test]
-		public void Stop()
-		{
-			// arrange
-			var loop = new EventLoop();
-			var wait = new AutoResetEvent(false);
-			const int loops = 10;
-			const int sleep = 10;
-			const int maxSleep = (loops + 1)*sleep;
-			for (var index = 0; index < loops; index++)
-			{
-				var localIndex = index;
-				loop.Schedule(() => {
-					Thread.Sleep(sleep);
-					if (localIndex == loops - 1)
-						wait.Set();
-				});
-			}
-
-			// act
-			loop.Start(() => { });
-			loop.Stop();
-
-			// assert
-			Assert.That(() => wait.WaitOne(maxSleep), Is.False);
-		}
-		[Test]
 		public void ThrowIfDisposed()
 		{
 			// arrange
@@ -105,7 +79,6 @@ namespace NLoop.Core.Tests
 
 			// assert
 			Assert.That(() => loop.Start(() => { }), Throws.InstanceOf<ObjectDisposedException>());
-			Assert.That(() => loop.Stop(), Throws.InstanceOf<ObjectDisposedException>());
 		}
 		[Test]
 		public void TrackResourceCancel()

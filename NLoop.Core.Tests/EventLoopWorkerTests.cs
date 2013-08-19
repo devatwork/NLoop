@@ -74,20 +74,6 @@ namespace NLoop.Core.Tests
 			Assert.That(worker.IsRunning, Is.True);
 		}
 		[Test]
-		public void Stop()
-		{
-			// arrange
-			var nextCallback = new Func<Action>(() => null);
-			var worker = new EventLoopWorker(nextCallback);
-			worker.Start();
-
-			// act
-			worker.Stop();
-
-			// assert
-			Assert.That(worker.IsRunning, Is.False);
-		}
-		[Test]
 		public void ThrowIfDisposed()
 		{
 			// arrange
@@ -101,7 +87,6 @@ namespace NLoop.Core.Tests
 			// assert
 			Assert.That(() => worker.IsRunning, Throws.InstanceOf<ObjectDisposedException>());
 			Assert.That(() => worker.Start(), Throws.InstanceOf<ObjectDisposedException>());
-			Assert.That(() => worker.Stop(), Throws.InstanceOf<ObjectDisposedException>());
 		}
 		[Test]
 		public void WakeupAfterIdling()

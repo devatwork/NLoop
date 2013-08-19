@@ -108,22 +108,6 @@ namespace NLoop.Core
 			worker.Start();
 		}
 		/// <summary>
-		/// Stops this event loop. 
-		/// </summary>
-		/// <exception cref="ObjectDisposedException">Thrown if this worker has been disposed of.</exception>
-		public void Stop()
-		{
-			// check if we are not disposed
-			CheckDisposed();
-
-			// if the event loop was not started there is not much to do
-			if (!IsStarted || worker == null)
-				return;
-
-			// tell the worker to stop
-			worker.Stop();
-		}
-		/// <summary>
 		/// Dispose resources. Override this method in derived classes. Unmanaged resources should always be released
 		/// when this method is called. Managed resources may only be disposed of if disposeManagedResources is true.
 		/// </summary>
@@ -134,18 +118,14 @@ namespace NLoop.Core
 			if (!disposeManagedResources)
 				return;
 
-			// tell the worker to stop
+			// dispose the worker
 			if (worker != null)
-				worker.Stop();
+				worker.Dispose();
 
 			// dispose all resources tracked by this event loop
 			foreach (var disposable in resources.Values)
 				disposable.Dispose();
 			resources.Clear();
-
-			// dispose the worker
-			if (worker != null)
-				worker.Dispose();
 		}
 		/// <summary>
 		/// Tries to dequeue the next callback from the <see cref="callbackQueue"/>.

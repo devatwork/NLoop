@@ -95,18 +95,6 @@ namespace NLoop.Core
 			worker.ContinueWith(Work);
 		}
 		/// <summary>
-		/// Stops doing work.
-		/// </summary>
-		/// <exception cref="ObjectDisposedException">Thrown if this worker has been disposed of.</exception>
-		public void Stop()
-		{
-			// check if we are not disposed
-			CheckDisposed();
-
-			// signal the worker to stop processing
-			stopHandle.Set();
-		}
-		/// <summary>
 		/// Signals the worker there is work to be done.
 		/// </summary>
 		public void SignalMoreWork()
