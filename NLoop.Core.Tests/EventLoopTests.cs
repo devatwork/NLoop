@@ -23,9 +23,12 @@ namespace NLoop.Core.Tests
 			loop.Schedule(() => counter++);
 
 			// assert
-			Assert.That(loop.IsStarted, Is.True);
 			Assert.That(() => wait.WaitOne(100), Is.True);
 			Assert.That(counter, Is.EqualTo(3));
+
+			// cleanup
+			loop.Dispose();
+			wait.Dispose();
 		}
 		[Test]
 		public void ScheduleParameterChecking()
@@ -43,8 +46,11 @@ namespace NLoop.Core.Tests
 			loop.Start(() => wait.Set());
 
 			// assert
-			Assert.That(loop.IsStarted, Is.True);
 			Assert.That(() => wait.WaitOne(100), Is.True);
+
+			// cleanup
+			loop.Dispose();
+			wait.Dispose();
 		}
 		[Test]
 		public void StartWithCallbackCalledTwice()
@@ -58,9 +64,12 @@ namespace NLoop.Core.Tests
 			loop.Start(() => wait.Signal());
 
 			// assert
-			Assert.That(loop.IsStarted, Is.True);
 			Assert.That(() => wait.WaitHandle.WaitOne(100), Is.True);
 			Assert.That(wait.CurrentCount, Is.EqualTo(0));
+
+			// cleanup
+			loop.Dispose();
+			wait.Dispose();
 		}
 		[Test]
 		public void StartWithCallbackParameterChecking()
@@ -98,6 +107,10 @@ namespace NLoop.Core.Tests
 
 			// assert
 			Assert.That(cancelled, Is.True);
+
+			// cleanup
+			loop.Dispose();
+			cts.Dispose();
 		}
 		[Test]
 		public void TrackResourceDispose()
@@ -114,6 +127,10 @@ namespace NLoop.Core.Tests
 
 			// assert
 			Assert.That(disposed, Is.True);
+
+			// cleanup
+			loop.Dispose();
+			cts.Dispose();
 		}
 		[Test]
 		public void TrackResourceParameterChecking()
@@ -123,6 +140,9 @@ namespace NLoop.Core.Tests
 
 			// assert
 			Assert.That(() => new EventLoop().TrackResource(cts.Token, null), Throws.InstanceOf<ArgumentNullException>());
+
+			// cleanup
+			cts.Dispose();
 		}
 		[Test]
 		public void TrackResourceUntrackedDisposed()
@@ -148,6 +168,10 @@ namespace NLoop.Core.Tests
 			Assert.That(gotDisposer, Is.True, "Expected to get the disposer back");
 			Assert.That(untrackedDisposer, Is.SameAs(disposer), "Expected the same disposer back");
 			Assert.That(disposed, Is.True);
+
+			// cleanup
+			loop.Dispose();
+			cts.Dispose();
 		}
 	}
 }

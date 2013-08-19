@@ -11,28 +11,13 @@ namespace NLoop.Core
 	public class EventLoop : Disposable, IResourceTrackingScheduler
 	{
 		/// <summary>
-		/// Holds all the callbacks to event handlers which need to be invoked in this event loop.
-		/// </summary>
-		private readonly ConcurrentQueue<Action> callbackQueue = new ConcurrentQueue<Action>();
-		/// <summary>
 		/// Holds all the registered resources used in this event loop.
 		/// </summary>
 		private readonly ConcurrentDictionary<CancellationToken, IDisposable> resources = new ConcurrentDictionary<CancellationToken, IDisposable>();
 		/// <summary>
-		/// A value which indicates the started state. 0 indicates not started, 1 indicates starting or started.
-		/// </summary>
-		private int startedState;
-		/// <summary>
 		/// Holds the <see cref="EventLoopWorker"/> used by this event loop.
 		/// </summary>
-		private EventLoopWorker worker;
-		/// <summary>
-		/// Gets a flag indicating whether this event loop was already started or not.
-		/// </summary>
-		public bool IsStarted
-		{
-			get { return Thread.VolatileRead(ref startedState) == 1; }
-		}
+		private readonly EventLoopWorker worker = new EventLoopWorker();
 		/// <summary>
 		/// Schedules a new <paramref name="callback" /> for execution on this event loop.
 		/// </summary>
@@ -40,16 +25,7 @@ namespace NLoop.Core
 		/// <exception cref="ArgumentNullException">Thrown if <paramref name="callback"/> is null.</exception>
 		public void Schedule(Action callback)
 		{
-			// validate arguments
-			if (callback == null)
-				throw new ArgumentNullException("callback");
-
-			// enqueue the callback
-			callbackQueue.Enqueue(callback);
-
-			// signal the worker there is more  work
-			if (IsStarted && worker != null)
-				worker.SignalMoreWork();
+			worker.Schedule(callback);
 		}
 		/// <summary>
 		/// Registers a tracked resource to this event loop. The tracked resource will be disposed of if the event loop is disposed off.
@@ -95,17 +71,6 @@ namespace NLoop.Core
 
 			// add the initial callback to this loop
 			Schedule(callback);
-
-			// Attempt to move the started state from 0 to 1. If successful, we can be assured that
-			// this thread is the first thread to do so, and can safely create a worker for this event loop
-			if (Interlocked.CompareExchange(ref startedState, 1, 0) == 0)
-			{
-				// create the event loop worker
-				worker = new EventLoopWorker(NextCallback);
-			}
-
-			// start the worker
-			worker.Start();
 		}
 		/// <summary>
 		/// Dispose resources. Override this method in derived classes. Unmanaged resources should always be released
@@ -126,15 +91,6 @@ namespace NLoop.Core
 			foreach (var disposable in resources.Values)
 				disposable.Dispose();
 			resources.Clear();
-		}
-		/// <summary>
-		/// Tries to dequeue the next callback from the <see cref="callbackQueue"/>.
-		/// </summary>
-		/// <returns>Returns the callback if there is one, otherwise null.</returns>
-		private Action NextCallback()
-		{
-			Action callback;
-			return callbackQueue.TryDequeue(out callback) ? callback : null;
 		}
 		/// <summary>
 		/// Unregisters a resource by its <paramref name="token"/>.
