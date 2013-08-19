@@ -23,6 +23,10 @@ namespace NLoop.Timing.Tests
 
 			// assert
 			Assert.That(counter.Wait(timeout + timeout + timeout), Is.True);
+
+			// cleanup
+			loop.Dispose();
+			counter.Dispose();
 		}
 		[Test]
 		public void SetIntervalCancel()
@@ -40,6 +44,10 @@ namespace NLoop.Timing.Tests
 
 			// assert
 			Assert.That(callbackinvoked.WaitOne(timeout + timeout), Is.False);
+
+			// cleanup
+			loop.Dispose();
+			callbackinvoked.Dispose();
 		}
 		[Test]
 		public void SetIntervalParameterChecking()
@@ -53,6 +61,9 @@ namespace NLoop.Timing.Tests
 			// assert
 			Assert.That(() => ((EventLoop) null).SetInterval(callback, timeout), Throws.InstanceOf<ArgumentNullException>());
 			Assert.That(() => loop.SetInterval(null, timeout), Throws.InstanceOf<ArgumentNullException>());
+
+			// cleanup
+			loop.Dispose();
 		}
 		[Test]
 		public void SetTimeout()
@@ -70,6 +81,10 @@ namespace NLoop.Timing.Tests
 			// assert
 			Assert.That(cancelTimeout, Is.Not.Null);
 			Assert.That(callbackinvoked.WaitOne(timeout + timeout), Is.True);
+
+			// cleanup
+			loop.Dispose();
+			callbackinvoked.Dispose();
 		}
 		[Test]
 		public void SetTimeoutCancel()
@@ -87,6 +102,10 @@ namespace NLoop.Timing.Tests
 
 			// assert
 			Assert.That(callbackinvoked.WaitOne(timeout + timeout), Is.False);
+
+			// cleanup
+			loop.Dispose();
+			callbackinvoked.Dispose();
 		}
 		[Test]
 		public void SetTimeoutParameterChecking()
@@ -100,6 +119,9 @@ namespace NLoop.Timing.Tests
 			// assert
 			Assert.That(() => ((EventLoop) null).SetTimeout(callback, timeout), Throws.InstanceOf<ArgumentNullException>());
 			Assert.That(() => loop.SetTimeout(null, timeout), Throws.InstanceOf<ArgumentNullException>());
+
+			// cleanup
+			loop.Dispose();
 		}
 	}
 }
