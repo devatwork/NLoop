@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Class Name="NLoop.Timing.TimerControl" BaseTypeListCollapsed="true">
+    <Position X="0.5" Y="2.5" Width="4" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAgQAAABAAAAAAAAAAAAAAAAgAAIAAAAgABAAA=</HashCode>
+      <FileName>TimerControl.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="NLoop.Timing.SetTimeoutExtensions">
+    <Position X="5.5" Y="0.5" Width="7.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAA=</HashCode>
+      <FileName>SetTimeoutExtensions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="NLoop.Timing.ITimer">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ITimer.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

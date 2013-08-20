@@ -25,7 +25,7 @@ namespace NLoop.Timing
 				throw new ArgumentNullException("callback");
 
 			// create the timer which will schedule the callback
-			var timer = new TimerControl();
+			var timer = new TimerControl(timeout);
 			var token = timer.Token;
 
 			// create a resource managed by the event loop
@@ -41,7 +41,7 @@ namespace NLoop.Timing
 			});
 
 			// set the timer
-			timer.SetTimeout(timeout, () => {
+			timer.Set(() => {
 				// untrack the resource
 				untrack(timer.Token);
 
@@ -72,7 +72,7 @@ namespace NLoop.Timing
 				throw new ArgumentNullException("callback");
 
 			// create the timer which will schedule the callback
-			var timer = new TimerControl();
+			var timer = new TimerControl(timeout, timeout);
 			var token = timer.Token;
 
 			// create a resource managed by the event loop
@@ -88,7 +88,7 @@ namespace NLoop.Timing
 			});
 
 			// set the timer
-			timer.SetInterval(timeout, () => resouceResourceTrackingScheduler.Schedule(callback));
+			timer.Set(() => resouceResourceTrackingScheduler.Schedule(callback));
 
 			// return the timer
 			return timer;

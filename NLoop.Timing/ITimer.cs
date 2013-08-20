@@ -11,5 +11,9 @@ namespace NLoop.Timing
 		/// Cancels this timer. The timer will not longer be available.
 		/// </summary>
 		void Cancel();
+		/// <summary>
+		/// Resets this timer. Useful in watchdog situations.
+		/// </summary>
+		void Reset();
 	}
 }

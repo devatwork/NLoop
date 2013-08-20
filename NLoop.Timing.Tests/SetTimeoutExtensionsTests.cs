@@ -123,5 +123,31 @@ namespace NLoop.Timing.Tests
 			// cleanup
 			loop.Dispose();
 		}
+		[Test]
+		public void SetTimeoutReset()
+		{
+			// arrange
+			var loop = new EventLoop();
+			loop.Start(() => { });
+			var callbackinvoked = new ManualResetEvent(false);
+			var callback = new Action(() => callbackinvoked.Set());
+			var timeout = TimeSpan.FromMilliseconds(100);
+
+			// act
+			var cancelTimeout = loop.SetTimeout(callback, timeout);
+			Thread.Sleep(50);
+			cancelTimeout.Reset();
+			Thread.Sleep(50);
+			cancelTimeout.Reset();
+
+			// assert
+			Assert.That(callbackinvoked.WaitOne(0), Is.False);
+			Assert.That(cancelTimeout, Is.Not.Null);
+			Assert.That(callbackinvoked.WaitOne(timeout + timeout), Is.True);
+
+			// cleanup
+			loop.Dispose();
+			callbackinvoked.Dispose();
+		}
 	}
 }
