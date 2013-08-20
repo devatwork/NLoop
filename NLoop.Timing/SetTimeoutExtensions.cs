@@ -31,22 +31,19 @@ namespace NLoop.Timing
 			// create a resource managed by the event loop
 			var untrack = resouceResourceTrackingScheduler.TrackResource(token, timer);
 
-			// dispose the timer if cancelled
-			token.Register(() => {
-				// untrack the resource
+			// dispose the hold resources
+			var cleanup = new Action(() => {
 				untrack(token);
-
-				// dispose the timer
 				timer.Dispose();
 			});
 
+			// dispose the timer if cancelled
+			token.Register(cleanup);
+
 			// set the timer
 			timer.Set(() => {
-				// untrack the resource
-				untrack(timer.Token);
-
-				// dispose the timer
-				timer.Dispose();
+				// cleanup hold resource
+				cleanup();
 
 				// schedule the callback for execution
 				resouceResourceTrackingScheduler.Schedule(callback);
