@@ -38,7 +38,7 @@ namespace NLoop.Net.Http
 			var deferred = eventLoop.Defer<HttpResponseMessage>(cts.Cancel);
 
 			// create a resource managed by the event loop
-			eventLoop.TrackResource(token, untrack => Task.Run(() => {
+			eventLoop.TrackResource(token, Task.Run(() => {
 				try
 				{
 					// send the request and retrieve the response
@@ -56,6 +56,7 @@ namespace NLoop.Net.Http
 				}
 
 				// dispose the used resources
+				request.Dispose();
 				cts.Dispose();
 			}));
 
