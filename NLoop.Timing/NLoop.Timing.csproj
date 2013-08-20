@@ -38,8 +38,10 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ITimer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SetTimeoutExtensions.cs" />
+    <Compile Include="TimerControl.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NLoop.Core\NLoop.Core.csproj">

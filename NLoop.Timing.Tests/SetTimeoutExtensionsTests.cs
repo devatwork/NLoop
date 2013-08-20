@@ -39,8 +39,8 @@ namespace NLoop.Timing.Tests
 			var timeout = TimeSpan.FromMilliseconds(100);
 
 			// act
-			var cancelTimeout = loop.SetInterval(callback, timeout);
-			cancelTimeout();
+			var timer = loop.SetInterval(callback, timeout);
+			timer.Cancel();
 
 			// assert
 			Assert.That(callbackinvoked.WaitOne(timeout + timeout), Is.False);
@@ -97,8 +97,8 @@ namespace NLoop.Timing.Tests
 			var timeout = TimeSpan.FromMilliseconds(100);
 
 			// act
-			var cancelTimeout = loop.SetTimeout(callback, timeout);
-			cancelTimeout();
+			var timer = loop.SetTimeout(callback, timeout);
+			timer.Cancel();
 
 			// assert
 			Assert.That(callbackinvoked.WaitOne(timeout + timeout), Is.False);
