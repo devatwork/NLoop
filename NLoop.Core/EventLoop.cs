@@ -31,28 +31,27 @@ namespace NLoop.Core
 		/// Registers a tracked resource to this event loop. The tracked resource will be disposed of if the event loop is disposed off.
 		/// </summary>
 		/// <param name="token">The <see cref="CancellationToken"/> for the resource.</param>
-		/// <param name="resourceFactory">Creates the new resource.</param>
-		/// <returns>Returns the created <see cref="CancellationTokenSource"/>.</returns>
+		/// <param name="resource">The resource which to track.</param>
+		/// <returns>Returns the <see cref="UntrackResourceCallback"/>.</returns>
 		/// <exception cref="ArgumentNullException">Thrown if one of the parameters is null.</exception>
-		public void TrackResource(CancellationToken token, ResourceFactoryCallback resourceFactory)
+		/// <exception cref="InvalidOperationException">Thrown if the resource could not be tracked.</exception>
+		/// <exception cref="ObjectDisposedException">Thrown if the <see cref="IResourceTrackingScheduler"/> was disposed.</exception>
+		public UntrackResourceCallback TrackResource(CancellationToken token, IDisposable resource)
 		{
 			// validate arguments
 			if (token == null)
 				throw new ArgumentNullException("token");
-			if (resourceFactory == null)
-				throw new ArgumentNullException("resourceFactory");
+			if (resource == null)
+				throw new ArgumentNullException("resource");
 
 			// check if we are not disposed
 			CheckDisposed();
 
 			// track the resource
-			resources.AddOrUpdate(token, key => {
-				// get the cleanup dispose action 
-				var cleanup = resourceFactory((out IDisposable disposable) => TryUnregisterResource(token, out disposable));
+			if (!resources.TryAdd(token, resource))
+				throw new InvalidOperationException("Failed to track resource");
 
-				// return the cleanup dispose action
-				return cleanup;
-			}, (key, value) => { throw new NotSupportedException("The token was already registered for another resource, this should never happen"); });
+			return TryUnregisterResource;
 		}
 		/// <summary>
 		/// Starts this event loop and add the given <paramref name="callback"/> to it to execute first.
@@ -96,11 +95,11 @@ namespace NLoop.Core
 		/// Unregisters a resource by its <paramref name="token"/>.
 		/// </summary>
 		/// <param name="token">The <see cref="CancellationToken"/> of the resource.</param>
-		/// <param name="disposer">The registerd <see cref="IDisposable"/> for the resource.</param>
-		private bool TryUnregisterResource(CancellationToken token, out IDisposable disposer)
+		private bool TryUnregisterResource(CancellationToken token)
 		{
 			// unregister the resource.
-			return resources.TryRemove(token, out disposer);
+			IDisposable resource;
+			return resources.TryRemove(token, out resource);
 		}
 	}
 }

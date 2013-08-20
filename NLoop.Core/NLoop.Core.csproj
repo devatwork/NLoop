@@ -50,8 +50,7 @@
     <Compile Include="Promises\RejectedCallback.cs" />
     <Compile Include="Promises\ResolvedCallback.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ResourceFactoryCallback.cs" />
-    <Compile Include="UnregisterResourceAction.cs" />
+    <Compile Include="UntrackResourceCallback.cs" />
     <Compile Include="Utils\Disposable.cs" />
     <Compile Include="Utils\DisposeAction.cs" />
   </ItemGroup>

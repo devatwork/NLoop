@@ -97,10 +97,8 @@ namespace NLoop.Core.Tests
 			var token = cts.Token;
 			var loop = new EventLoop();
 			var cancelled = false;
-			loop.TrackResource(token, untrack => {
-				token.Register(() => { cancelled = true; });
-				return new DisposeAction(() => { });
-			});
+			token.Register(() => { cancelled = true; });
+			loop.TrackResource(token, new DisposeAction(() => { }));
 
 			// act
 			cts.Cancel();
@@ -120,7 +118,7 @@ namespace NLoop.Core.Tests
 			var token = cts.Token;
 			var loop = new EventLoop();
 			var disposed = false;
-			loop.TrackResource(token, untrack => new DisposeAction(() => { disposed = true; }));
+			loop.TrackResource(token, new DisposeAction(() => { disposed = true; }));
 
 			// act
 			loop.Dispose();
@@ -137,37 +135,32 @@ namespace NLoop.Core.Tests
 		{
 			// arrange
 			var cts = new CancellationTokenSource();
+			var token = cts.Token;
 
 			// assert
-			Assert.That(() => new EventLoop().TrackResource(cts.Token, null), Throws.InstanceOf<ArgumentNullException>());
+			Assert.That(() => new EventLoop().TrackResource(token, null), Throws.InstanceOf<ArgumentNullException>());
 
 			// cleanup
 			cts.Dispose();
 		}
 		[Test]
-		public void TrackResourceUntrackedDisposed()
+		public void TrackResourceUntrack()
 		{
 			// arrange
 			var cts = new CancellationTokenSource();
 			var token = cts.Token;
 			var loop = new EventLoop();
 			var disposed = false;
-			UnregisterResourceAction doUntrack = null;
 			var disposer = new DisposeAction(() => { disposed = true; });
-			loop.TrackResource(token, untrack => {
-				doUntrack = untrack;
-				return disposer;
-			});
-
-			// act
-			IDisposable untrackedDisposer;
-			var gotDisposer = doUntrack(out untrackedDisposer);
-			untrackedDisposer.Dispose();
+			var untrack = loop.TrackResource(token, disposer);
 
 			// assert
-			Assert.That(gotDisposer, Is.True, "Expected to get the disposer back");
-			Assert.That(untrackedDisposer, Is.SameAs(disposer), "Expected the same disposer back");
-			Assert.That(disposed, Is.True);
+			Assert.That(untrack(token), Is.True, "Expected the resource to be untracked");
+			Assert.That(untrack(token), Is.False, "Expected the resource to be untracked already");
+
+			// dispose the loop
+			loop.Dispose();
+			Assert.That(disposed, Is.False);
 
 			// cleanup
 			loop.Dispose();

@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
   <Class Name="NLoop.Core.EventLoop">
-    <Position X="0.5" Y="2.75" Width="5.75" />
+    <Position X="0.5" Y="2.75" Width="6.75" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAACAQASAAAkgAAAAAAEBAAgAIIAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAACAQASAAAAAAAAAAAEAAAgAIAAAAAAAAAAA=</HashCode>
       <FileName>EventLoop.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -12,11 +12,12 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="NLoop.Core.EventLoopWorker">
-    <Position X="7.75" Y="2.75" Width="4" />
+    <Position X="9.75" Y="2.75" Width="4" />
     <TypeIdentifier>
-      <HashCode>AAgAAAAACCAQAAAAAAEAQABAAAAAAgAAJAAAAAACACA=</HashCode>
+      <HashCode>AAgAIAAACAAQAAAAAABAAAAAAEAAAgAAAAAAAAAAAAA=</HashCode>
       <FileName>EventLoopWorker.cs</FileName>
     </TypeIdentifier>
+    <Lollipop Position="0.2" />
   </Class>
   <Interface Name="NLoop.Core.IScheduler">
     <Position X="0.5" Y="0.5" Width="2.5" />
@@ -26,24 +27,17 @@
     </TypeIdentifier>
   </Interface>
   <Interface Name="NLoop.Core.IResourceTrackingScheduler">
-    <Position X="3.75" Y="0.5" Width="5.75" />
+    <Position X="3.75" Y="0.5" Width="6.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>IResourceTrackingScheduler.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Delegate Name="NLoop.Core.ResourceFactoryCallback">
-    <Position X="0.5" Y="7.25" Width="2.75" />
+  <Delegate Name="NLoop.Core.UntrackResourceCallback">
+    <Position X="0.5" Y="6.25" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAA=</HashCode>
-      <FileName>ResourceFactoryCallback.cs</FileName>
-    </TypeIdentifier>
-  </Delegate>
-  <Delegate Name="NLoop.Core.UnregisterResourceAction">
-    <Position X="3.75" Y="7.25" Width="2" />
-    <TypeIdentifier>
-      <HashCode>IAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>UnregisterResourceAction.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>UntrackResourceCallback.cs</FileName>
     </TypeIdentifier>
   </Delegate>
   <Font Name="Segoe UI" Size="9" />

@@ -12,9 +12,11 @@ namespace NLoop.Core
 		/// Registers a tracked resource to this event loop. The tracked resource will be disposed of if the event loop is disposed off.
 		/// </summary>
 		/// <param name="token">The <see cref="CancellationToken"/> for the resource.</param>
-		/// <param name="resourceFactory">Creates the new resource.</param>
-		/// <returns>Returns the created <see cref="CancellationTokenSource"/>.</returns>
+		/// <param name="resource">The resource which to track.</param>
+		/// <returns>Returns the <see cref="UntrackResourceCallback"/>.</returns>
 		/// <exception cref="ArgumentNullException">Thrown if one of the parameters is null.</exception>
-		void TrackResource(CancellationToken token, ResourceFactoryCallback resourceFactory);
+		/// <exception cref="InvalidOperationException">Thrown if the resource could not be tracked.</exception>
+		/// <exception cref="ObjectDisposedException">Thrown if the <see cref="IResourceTrackingScheduler"/> was disposed.</exception>
+		UntrackResourceCallback TrackResource(CancellationToken token, IDisposable resource);
 	}
 }
