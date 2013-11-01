@@ -65,9 +65,6 @@ namespace NLoop.Core
 			if (callback == null)
 				throw new ArgumentNullException("callback");
 
-			// check if we are not disposed
-			CheckDisposed();
-
 			// add the initial callback to this loop
 			Schedule(callback);
 		}
